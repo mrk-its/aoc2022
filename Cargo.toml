@@ -1,0 +1,22 @@
+[workspace]
+members = [
+    "day01", "utils",
+]
+
+[profile.dev]
+lto = true
+opt-level = "s"
+debug = 2
+codegen-units = 1
+panic = "abort"
+
+[profile.release]
+opt-level = "s"
+lto = true
+debug = 2
+panic = "abort"
+
+[patch.crates-io]
+# ufmt = {git="https://github.com/mrk-its/ufmt", branch="ptr_width_16_fix"}
+# ufmt-write = {git="https://github.com/mrk-its/ufmt", branch="ptr_width_16_fix"}
+

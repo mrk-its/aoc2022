@@ -1,0 +1,8 @@
+[build]
+target = "mos-sim-none"
+
+[target.mos-sim-none]
+runner = ["mos-sim", "--cycles"]
+
+[unstable]
+build-std = ["core", "alloc"]
