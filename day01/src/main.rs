@@ -22,6 +22,12 @@ fn main() {
         }
     }
 
-    println!("part1: {}", maxes.last().unwrap());
-    println!("part2: {}", maxes.iter().sum::<Int>());
+    let part1 = *maxes.last().unwrap();
+    let part2 = maxes.iter().sum::<Int>();
+
+    assert_eq!(part1, 69626);
+    assert_eq!(part2, 206780);
+
+    println!("part1: {}", part1);
+    println!("part2: {}", part2);
 }
