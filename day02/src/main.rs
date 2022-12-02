@@ -10,7 +10,7 @@ const SCORES: [u8; 11] = [3, 6, 0, 0, 0, 3, 6, 0, 6, 0, 3];
 const THINGS: [u8; 11] = [2, 0, 1, 0, 0, 1, 2, 0, 1, 2, 0];
 
 fn parse_line(line: &[u8]) -> Pair {
-    return (line[0] - b'A') * 4 + line[2] - b'X'
+    (line[0] - b'A') * 4 + line[2] - b'X'
 }
 
 fn score(pair: Pair) -> Score {
