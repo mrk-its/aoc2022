@@ -91,6 +91,11 @@ where
         let bit_offs = index & 7;
         self.bits[offs] |= 1 << bit_offs;
     }
+    pub fn intersect(&mut self, other: &BitSet<N>) {
+        for (a, b) in self.bits.iter_mut().zip(other.bits.iter()) {
+            *a &= *b;
+        }
+    }
 }
 
 pub struct SimpleMap<const N: usize, K, V>
