@@ -72,9 +72,29 @@ where
     bits: [u8; (N + 7) / 8],
 }
 
-// impl<T, const N: usize> core::iter::Extend<T> for BitSet<N> where [(); (N + 7) / 8]:, {
+impl<const N: usize> core::iter::Extend<usize> for BitSet<N> where [(); (N + 7) / 8]:, {
+    fn extend<X: IntoIterator<Item=usize>>(&mut self, iter: X) {
+        for item in iter {
+            self.insert(item);
+        }
+    }
+}
 
-// }
+impl<const N: usize> core::ops::BitAndAssign for BitSet<N> where
+    [(); (N + 7) / 8]:,{
+    #[inline(always)]
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.intersect(&rhs)
+    }
+}
+
+impl<const N: usize> core::ops::BitOrAssign for BitSet<N> where
+    [(); (N + 7) / 8]:,{
+    #[inline(always)]
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.union(&rhs)
+    }
+}
 
 impl<const N: usize> BitSet<N>
 where
@@ -100,14 +120,14 @@ where
         let bit_offs = index & 7;
         self.bits[offs] |= 1 << bit_offs;
     }
-    pub fn extend<T>(&mut self, iter: T) where T: IntoIterator<Item=usize> {
-        for item in iter {
-            self.insert(item);
-        }
-    }
     pub fn intersect(&mut self, other: &BitSet<N>) {
         for (a, b) in self.bits.iter_mut().zip(other.bits.iter()) {
             *a &= *b;
+        }
+    }
+    pub fn union(&mut self, other: &BitSet<N>) {
+        for (a, b) in self.bits.iter_mut().zip(other.bits.iter()) {
+            *a |= *b;
         }
     }
 }

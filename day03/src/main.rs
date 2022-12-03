@@ -21,6 +21,7 @@ fn intersect(lines: &[&[u8]]) -> Score {
         let mut tmp = BitSet::<64>::new();
         tmp.extend(data.iter().cloned().map(priority));
         out.intersect(&tmp);
+        // out &= tmp;
     }
     for data in lines.last().cloned() {
         for v in data.iter().cloned().map(priority) {
