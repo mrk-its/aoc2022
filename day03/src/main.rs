@@ -1,9 +1,14 @@
 #![no_std]
 #![feature(start)]
+#![feature(default_alloc_error_handler)]
+
+extern crate alloc;
+extern crate mos_alloc;
 
 utils::entry!(main);
 use ufmt_stdio::*;
 use utils::BitSet;
+use alloc::vec::Vec;
 
 type Score = usize;
 
@@ -41,21 +46,10 @@ fn score1(line: &[u8]) -> Score {
 }
 
 fn main() {
-    let input = utils::iter_lines!("input.txt");
-    let part1 = input.clone().map(score1).sum::<Score>();
-    let mut part2 = 0;
-
-    let mut index = 0;
-    let mut group: [&[u8]; 3] = [b""; 3];
-
-    for line in input {
-        group[index] = line;
-        index += 1;
-        if index == 3 {
-            index = 0;
-            part2 += intersect(&group);
-        }
-    }
+    let input = utils::iter_lines!("input.txt").collect::<Vec<_>>();
+    let part1 = input.iter().cloned().map(score1).sum::<Score>();
+    // TODO: use iter_array_chunks for no_alloc
+    let part2 = input.chunks(3).map(intersect).sum::<Score>();
 
     assert!(part1 == 8153);
     assert!(part2 == 2342);
