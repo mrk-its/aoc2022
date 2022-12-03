@@ -72,6 +72,10 @@ where
     bits: [u8; (N + 7) / 8],
 }
 
+// impl<T, const N: usize> core::iter::Extend<T> for BitSet<N> where [(); (N + 7) / 8]:, {
+
+// }
+
 impl<const N: usize> BitSet<N>
 where
     [(); (N + 7) / 8]:,
@@ -79,6 +83,11 @@ where
     pub fn new() -> Self {
         Self {
             bits: [0; (N + 7) / 8],
+        }
+    }
+    pub fn all_set() -> Self {
+        Self {
+            bits: [0xff; (N + 7) / 8],
         }
     }
     pub fn contains(&self, index: usize) -> bool {
@@ -90,6 +99,11 @@ where
         let offs = index / 8;
         let bit_offs = index & 7;
         self.bits[offs] |= 1 << bit_offs;
+    }
+    pub fn extend<T>(&mut self, iter: T) where T: IntoIterator<Item=usize> {
+        for item in iter {
+            self.insert(item);
+        }
     }
     pub fn intersect(&mut self, other: &BitSet<N>) {
         for (a, b) in self.bits.iter_mut().zip(other.bits.iter()) {

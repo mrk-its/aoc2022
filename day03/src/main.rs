@@ -1,36 +1,30 @@
 #![no_std]
 #![feature(start)]
-utils::entry!(main);
 
+utils::entry!(main);
 use ufmt_stdio::*;
 use utils::BitSet;
 
 type Score = usize;
 
-fn priority(v: u8) -> u8 {
+fn priority(v: u8) -> usize {
     match v {
-        b'a'..=b'z' => v - b'a' + 1,
-        b'A'..=b'Z' => v - b'A' + 27,
+        b'a'..=b'z' => (v - b'a' + 1) as usize,
+        b'A'..=b'Z' => (v - b'A' + 27) as usize,
         _ => panic!(),
     }
 }
 
 fn intersect(lines: &[&[u8]]) -> Score {
-    let mut out = BitSet::<64>::new();
-    for v in lines[0].iter().cloned() {
-        out.insert(priority(v) as usize);
-    }
-
-    for data in lines[1..lines.len() - 1].iter().cloned() {
+    let mut out = BitSet::<64>::all_set();
+    for data in lines[..lines.len() - 1].iter() {
         let mut tmp = BitSet::<64>::new();
-        for v in data.iter().cloned().map(priority) {
-            tmp.insert(v as usize);
-        }
+        tmp.extend(data.iter().cloned().map(priority));
         out.intersect(&tmp);
     }
     for data in lines.last().cloned() {
         for v in data.iter().cloned().map(priority) {
-            if out.contains(v as usize) {
+            if out.contains(v) {
                 return v as Score;
             }
         }
