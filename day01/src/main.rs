@@ -28,6 +28,6 @@ fn main() {
     assert_eq!(part1, 69626);
     assert_eq!(part2, 206780);
 
-    println!("part1: {}", part1);
-    println!("part2: {}", part2);
+    println!("PART1: {}", part1);
+    println!("PART2: {}", part2);
 }

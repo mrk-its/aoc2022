@@ -54,6 +54,6 @@ fn main() {
     assert!(part1 == 8153);
     assert!(part2 == 2342);
 
-    println!("part1: {}", part1);
-    println!("part2: {}", part2);
+    println!("PART1: {}", part1);
+    println!("PART2: {}", part2);
 }

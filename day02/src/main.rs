@@ -29,6 +29,6 @@ fn main() {
     assert!(part1 == 13268);
     assert!(part2 == 15508);
 
-    println!("part1: {}", part1);
-    println!("part2: {}", part2);
+    println!("PART1: {}", part1);
+    println!("PART2: {}", part2);
 }
