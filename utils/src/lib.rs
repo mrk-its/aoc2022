@@ -72,24 +72,31 @@ where
     bits: [u8; (N + 7) / 8],
 }
 
-impl<const N: usize> core::iter::Extend<usize> for BitSet<N> where [(); (N + 7) / 8]:, {
-    fn extend<X: IntoIterator<Item=usize>>(&mut self, iter: X) {
+impl<const N: usize> core::iter::Extend<usize> for BitSet<N>
+where
+    [(); (N + 7) / 8]:,
+{
+    fn extend<X: IntoIterator<Item = usize>>(&mut self, iter: X) {
         for item in iter {
             self.insert(item);
         }
     }
 }
 
-impl<const N: usize> core::ops::BitAndAssign for BitSet<N> where
-    [(); (N + 7) / 8]:,{
+impl<const N: usize> core::ops::BitAndAssign for BitSet<N>
+where
+    [(); (N + 7) / 8]:,
+{
     #[inline(always)]
     fn bitand_assign(&mut self, rhs: Self) {
         self.intersect(&rhs)
     }
 }
 
-impl<const N: usize> core::ops::BitOrAssign for BitSet<N> where
-    [(); (N + 7) / 8]:,{
+impl<const N: usize> core::ops::BitOrAssign for BitSet<N>
+where
+    [(); (N + 7) / 8]:,
+{
     #[inline(always)]
     fn bitor_assign(&mut self, rhs: Self) {
         self.union(&rhs)
