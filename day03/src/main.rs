@@ -6,9 +6,9 @@ extern crate alloc;
 extern crate mos_alloc;
 
 utils::entry!(main);
+use alloc::vec::Vec;
 use ufmt_stdio::*;
 use utils::BitSet;
-use alloc::vec::Vec;
 
 type Score = usize;
 
