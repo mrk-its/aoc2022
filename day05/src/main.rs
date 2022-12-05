@@ -35,7 +35,7 @@ fn main() {
         }
     }
 
-    for (i, crane) in cranes.iter_mut().enumerate() {
+    for crane in cranes.iter_mut() {
         crane.reverse();
     }
     input.next();
@@ -61,6 +61,7 @@ fn main() {
         .map(|crane| crane.last().unwrap())
         .cloned()
         .collect::<Vec<_>>();
+    assert!(part1 == b"BWNCQRMDB");
     println!("PART1: {}", to_str(&part1));
 
     for (n, from, to) in instructions.clone() {
@@ -74,8 +75,6 @@ fn main() {
         .cloned()
         .collect::<Vec<_>>();
 
-    // assert!(part1 == 8153);
-    // assert!(part2 == 2342);
-
+    assert!(part2 == b"NHWZCBNBF");
     println!("PART2: {}", to_str(&part2));
 }
