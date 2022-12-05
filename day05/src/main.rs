@@ -12,8 +12,7 @@ use itertools::*;
 use ufmt_stdio::*;
 use utils::to_str;
 
-fn main() {
-    let mut input = utils::iter_lines!("input.txt");
+fn parse_cranes<'a>(input: &mut (impl Iterator<Item = &'a [u8]> + Clone)) -> Vec<Vec<u8>> {
     let mut max_items = 0;
     let mut n_cranes = 0;
     for line in input.clone() {
@@ -40,9 +39,23 @@ fn main() {
     }
     input.next();
 
+    cranes
+}
+
+fn top_items(cranes: &Vec<Vec<u8>>) -> Vec<u8> {
+    cranes
+        .iter()
+        .map(|crane| crane.last().unwrap())
+        .cloned()
+        .collect::<Vec<_>>()
+}
+
+fn main() {
+    let mut input = utils::iter_lines!("input.txt");
+    let mut cranes = parse_cranes(&mut input);
     let mut cranes2 = cranes.clone();
 
-    let instructions = input.clone().map(|line| {
+    let instructions = input.map(|line| {
         line.split(|f| f.is_ascii_whitespace())
             .filter(|v| v[0].is_ascii_digit())
             .map(|v| to_str(v).parse::<usize>().unwrap())
@@ -56,11 +69,7 @@ fn main() {
             cranes[to - 1].push(v);
         }
     }
-    let part1 = cranes
-        .iter()
-        .map(|crane| crane.last().unwrap())
-        .cloned()
-        .collect::<Vec<_>>();
+    let part1 = top_items(&cranes);
     assert!(part1 == b"BWNCQRMDB");
     println!("PART1: {}", to_str(&part1));
 
@@ -69,12 +78,8 @@ fn main() {
         let removed = cranes2[from - 1].drain(len - n..).collect::<Vec<_>>();
         cranes2[to - 1].extend(removed);
     }
-    let part2 = cranes2
-        .iter()
-        .map(|crane| crane.last().unwrap())
-        .cloned()
-        .collect::<Vec<_>>();
 
+    let part2 = top_items(&cranes2);
     assert!(part2 == b"NHWZCBNBF");
     println!("PART2: {}", to_str(&part2));
 }
