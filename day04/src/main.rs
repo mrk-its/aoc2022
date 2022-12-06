@@ -22,14 +22,12 @@ fn main() {
         .clone()
         .filter(|((al, ah), (bl, bh))| al >= bl && ah <= bh || al <= bl && ah >= bh)
         .count();
+    assert!(part1 == 485);
+    println!("PART1: {}", part1);
 
     let part2 = parsed
         .filter(|((al, ah), (bl, bh))| !(ah < bl || bh < al))
         .count();
-
-    assert!(part1 == 485);
     assert!(part2 == 857);
-
-    println!("PART1: {}", part1);
     println!("PART2: {}", part2);
 }

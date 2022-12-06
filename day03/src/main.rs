@@ -48,12 +48,11 @@ fn score1(line: &[u8]) -> Score {
 fn main() {
     let input = utils::iter_lines!("input.txt").collect::<Vec<_>>();
     let part1 = input.iter().cloned().map(score1).sum::<Score>();
+    assert!(part1 == 8153);
+    println!("PART1: {}", part1);
+
     // TODO: use iter_array_chunks for no_alloc
     let part2 = input.chunks(3).map(intersect).sum::<Score>();
-
-    assert!(part1 == 8153);
     assert!(part2 == 2342);
-
-    println!("PART1: {}", part1);
     println!("PART2: {}", part2);
 }
