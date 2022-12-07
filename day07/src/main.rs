@@ -27,120 +27,140 @@ enum IntNode {
     Dir(Dir),
 }
 
-impl IntNode {
-    fn as_mut_dir(&mut self) -> &mut Dir {
-        match self {
-            IntNode::Dir(ref mut dir) => dir,
-            IntNode::File => unreachable!(),
-        }
-    }
-    fn as_dir(&self) -> &Dir {
-        match self {
-            IntNode::Dir(dir) => dir,
-            IntNode::File => unreachable!(),
-        }
-    }
+struct FileSystem {
+    curr_dir: usize,
+    nodes: Vec<Node>,
 }
 
-fn update_dir_sizes(nodes: &Vec<Node>, curr_dir: usize) {
-    match &nodes[curr_dir].value {
-        IntNode::Dir(dir) => {
-            let mut size = 0;
-            for entry in &dir.entries {
-                update_dir_sizes(nodes, *entry);
-                size += nodes[*entry].size.get();
+impl FileSystem {
+    fn new() -> FileSystem {
+        let mut fs = FileSystem {
+            curr_dir: 0,
+            nodes: Vec::with_capacity(512),
+        };
+        fs.add_node(Node {
+            name: b"/".to_vec(),
+            size: Default::default(),
+            value: IntNode::Dir(Dir {
+                entries: Vec::new(),
+                parent: 0,
+            }),
+        });
+        fs
+    }
+    fn update_dir_sizes(&self, curr_dir: usize) {
+        match &self.nodes[curr_dir].value {
+            IntNode::Dir(dir) => {
+                let mut size = 0;
+                for entry in &dir.entries {
+                    self.update_dir_sizes(*entry);
+                    size += self.nodes[*entry].size.get();
+                }
+                self.nodes[curr_dir].size.set(size);
             }
-            nodes[curr_dir].size.set(size);
+            _ => (),
         }
-        _ => (),
+    }
+    fn cd(&mut self, name: &[u8]) {
+        self.curr_dir = if name == b"/" {
+            0
+        } else {
+            if let IntNode::Dir(dir) = &self.nodes[self.curr_dir].value {
+                if name == b".." {
+                    dir.parent
+                } else {
+                    *dir.entries
+                        .iter()
+                        .filter(|&&idx| self.nodes[idx].name == name)
+                        .next()
+                        .unwrap()
+                }
+            } else {
+                unreachable!()
+            }
+        }
+    }
+    fn add_dir(&mut self, name: &[u8]) {
+        self.add_node(Node {
+            name: name.to_vec(),
+            size: Default::default(),
+            value: IntNode::Dir(Dir {
+                entries: Vec::new(),
+                parent: self.curr_dir,
+            }),
+        });
+    }
+    fn add_file(&mut self, name: &[u8], size: u32) {
+        self.add_node(Node {
+            name: name.to_vec(),
+            size: Cell::new(size),
+            value: IntNode::File,
+        });
+    }
+    fn add_node(&mut self, node: Node) -> usize {
+        let is_root = node.name == b"/";
+        let index = self.nodes.len();
+        self.nodes.push(node);
+        if !is_root {
+            if let IntNode::Dir(dir) = &mut self.nodes[self.curr_dir].value {
+                dir.entries.push(index);
+            }
+        }
+        return index;
+    }
+    fn iter_dirs(&self) -> impl Iterator<Item = &Node> {
+        self.nodes.iter().filter(|f| match f.value {
+            IntNode::Dir(_) => true,
+            _ => false,
+        })
+    }
+    fn space_used(&self) -> u32 {
+        return self.nodes[0].size.get();
     }
 }
-
 fn main() {
     mos_alloc::set_limit(20000);
-    let mut nodes: Vec<Node> = Vec::with_capacity(512);
-    nodes.push(Node {
-        name: b"/".to_vec(),
-        size: Default::default(),
-        value: IntNode::Dir(Dir {
-            entries: Vec::new(),
-            parent: 0,
-        }),
-    });
-
-    let mut curr_dir = 0;
+    let mut fs = FileSystem::new();
 
     for line in utils::iter_lines!("input.txt") {
-        if line.starts_with(b"$ cd ") {
-            let name = &line[5..];
-            if name == b"/" {
-                curr_dir = 0;
-            } else if name == b".." {
-                curr_dir = nodes[curr_dir].value.as_dir().parent;
-            } else {
-                for entry in &nodes[curr_dir].value.as_dir().entries {
-                    if nodes[*entry].name == name {
-                        curr_dir = *entry;
-                    }
-                }
+        if line.starts_with(b"$ ") {
+            let line = &line[2..];
+            if line.starts_with(b"cd ") {
+                fs.cd(&line[3..]);
             }
-        } else if line[0] != b'$' {
+        } else {
             if line.starts_with(b"dir ") {
-                let name = line[4..].to_vec();
-                let index = nodes.len();
-                nodes.push(Node {
-                    name,
-                    size: Default::default(),
-                    value: IntNode::Dir(Dir {
-                        entries: Vec::new(),
-                        parent: curr_dir,
-                    }),
-                });
-                nodes[curr_dir].value.as_mut_dir().entries.push(index);
+                fs.add_dir(&line[4..]);
             } else {
                 let mut parts = line.split(|v| *v == b' ');
                 let size = to_str(parts.next().unwrap()).parse().unwrap();
-                let name = parts.next().unwrap().to_vec();
-                let index = nodes.len();
-                nodes.push(Node {
-                    name,
-                    size: Cell::new(size),
-                    value: IntNode::File,
-                });
-                nodes[curr_dir].value.as_mut_dir().entries.push(index);
+                let name = parts.next().unwrap();
+                fs.add_file(name, size);
             }
         }
     }
-    update_dir_sizes(&nodes, 0);
+    fs.update_dir_sizes(0);
 
-    let dirs = nodes.iter().filter(|f| match f.value {
-        IntNode::Dir(_) => true,
-        _ => false,
-    });
-
-    let part1 = dirs
-        .clone()
-        .filter(|f| match f.value {
-            IntNode::Dir(_) => f.size.get() < 100000,
-            _ => false,
-        })
+    let part1 = fs
+        .iter_dirs()
         .map(|f| f.size.get())
+        .filter(|&size| size < 100000)
         .sum::<u32>();
     assert!(part1 == 1644735);
     println!("PART1: {}", part1);
 
     let total_disk_space = 70000000;
     let update_requires = 30000000;
-    let unused_space = total_disk_space - nodes[0].size.get();
+    let unused_space = total_disk_space - fs.space_used();
 
     let required_space = update_requires - unused_space;
 
-    let part2 = dirs
-        .clone()
+    let part2 = fs
+        .iter_dirs()
         .map(|f| f.size.get())
-        .filter(|size| *size >= required_space)
+        .filter(|&size| size >= required_space)
         .min()
-        .unwrap_or(0);
+        .unwrap();
 
     println!("PART2: {}", part2);
 }
