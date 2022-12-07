@@ -70,7 +70,7 @@ fn main() {
 
     let mut curr_dir = 0;
 
-    for (n, line) in utils::iter_lines!("input.txt").enumerate() {
+    for line in utils::iter_lines!("input.txt") {
         if line.starts_with(b"$ cd ") {
             let name = &line[5..];
             if name == b"/" {
