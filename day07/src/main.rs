@@ -51,7 +51,6 @@ fn update_dir_sizes(nodes: &Vec<Node>, curr_dir: usize) {
                 size += nodes[*entry].size.get();
             }
             nodes[curr_dir].size.set(size);
-            println!("size of {} is {}", to_str(&nodes[curr_dir].name), size);
         }
         _ => (),
     }
@@ -72,30 +71,20 @@ fn main() {
     let mut curr_dir = 0;
 
     for (n, line) in utils::iter_lines!("input.txt").enumerate() {
-        println!("#{} {} free: {}", n, to_str(line), mos_alloc::bytes_free());
         if line.starts_with(b"$ cd ") {
             let name = &line[5..];
-            println!("cd {}", to_str(name));
             if name == b"/" {
                 curr_dir = 0;
             } else if name == b".." {
                 curr_dir = nodes[curr_dir].value.as_dir().parent;
             } else {
-                let mut found = false;
                 for entry in &nodes[curr_dir].value.as_dir().entries {
                     if nodes[*entry].name == name {
                         curr_dir = *entry;
-                        found = true;
                     }
                 }
-                if !found {
-                    println!("dir {} not found", to_str(name));
-                    unreachable!();
-                }
             }
-        } else if line == b"$ ls" {
-            println!("list of: {}", to_str(&nodes[curr_dir].name));
-        } else {
+        } else if line[0] != b'$' {
             if line.starts_with(b"dir ") {
                 let name = line[4..].to_vec();
                 let index = nodes.len();
@@ -145,7 +134,6 @@ fn main() {
     let unused_space = total_disk_space - nodes[0].size.get();
 
     let required_space = update_requires - unused_space;
-    println!("required_space: {}", required_space);
 
     let part2 = dirs
         .clone()
