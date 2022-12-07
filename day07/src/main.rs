@@ -140,7 +140,11 @@ fn main() {
         }
     }
     fs.update_dir_sizes(0);
-
+    println!(
+        "heap usage: {} of {}",
+        mos_alloc::bytes_free(),
+        mos_alloc::get_limit()
+    );
     let part1 = fs
         .iter_dirs()
         .map(|f| f.size.get())
