@@ -14,7 +14,7 @@ use utils::to_str;
 struct Node {
     name: Vec<u8>,
     size: Cell<u32>,
-    value: IntNode,
+    value: NodeType,
 }
 
 struct Dir {
@@ -22,7 +22,7 @@ struct Dir {
     parent: usize,
 }
 
-enum IntNode {
+enum NodeType {
     File,
     Dir(Dir),
 }
@@ -36,12 +36,12 @@ impl FileSystem {
     fn new() -> FileSystem {
         let mut fs = FileSystem {
             curr_dir: 0,
-            nodes: Vec::with_capacity(512),
+            nodes: Vec::with_capacity(500),
         };
         fs.add_node(Node {
             name: b"/".to_vec(),
             size: Default::default(),
-            value: IntNode::Dir(Dir {
+            value: NodeType::Dir(Dir {
                 entries: Vec::new(),
                 parent: 0,
             }),
@@ -50,7 +50,7 @@ impl FileSystem {
     }
     fn update_dir_sizes(&self, curr_dir: usize) {
         match &self.nodes[curr_dir].value {
-            IntNode::Dir(dir) => {
+            NodeType::Dir(dir) => {
                 let mut size = 0;
                 for entry in &dir.entries {
                     self.update_dir_sizes(*entry);
@@ -65,7 +65,7 @@ impl FileSystem {
         self.curr_dir = if name == b"/" {
             0
         } else {
-            if let IntNode::Dir(dir) = &self.nodes[self.curr_dir].value {
+            if let NodeType::Dir(dir) = &self.nodes[self.curr_dir].value {
                 if name == b".." {
                     dir.parent
                 } else {
@@ -84,7 +84,7 @@ impl FileSystem {
         self.add_node(Node {
             name: name.to_vec(),
             size: Default::default(),
-            value: IntNode::Dir(Dir {
+            value: NodeType::Dir(Dir {
                 entries: Vec::new(),
                 parent: self.curr_dir,
             }),
@@ -94,7 +94,7 @@ impl FileSystem {
         self.add_node(Node {
             name: name.to_vec(),
             size: Cell::new(size),
-            value: IntNode::File,
+            value: NodeType::File,
         });
     }
     fn add_node(&mut self, node: Node) -> usize {
@@ -102,7 +102,7 @@ impl FileSystem {
         let index = self.nodes.len();
         self.nodes.push(node);
         if !is_root {
-            if let IntNode::Dir(dir) = &mut self.nodes[self.curr_dir].value {
+            if let NodeType::Dir(dir) = &mut self.nodes[self.curr_dir].value {
                 dir.entries.push(index);
             }
         }
@@ -110,7 +110,7 @@ impl FileSystem {
     }
     fn iter_dirs(&self) -> impl Iterator<Item = &Node> {
         self.nodes.iter().filter(|f| match f.value {
-            IntNode::Dir(_) => true,
+            NodeType::Dir(_) => true,
             _ => false,
         })
     }
@@ -140,8 +140,9 @@ fn main() {
         }
     }
     fs.update_dir_sizes(0);
+    println!("nodes: {}", fs.nodes.len());
     println!(
-        "heap usage: {} of {}",
+        "free heap: {} of {}",
         mos_alloc::bytes_free(),
         mos_alloc::get_limit()
     );
