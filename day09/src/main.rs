@@ -4,13 +4,13 @@
 
 pub mod display;
 
-// #[cfg(target_vendor = "atari8")]
+#[cfg(target_vendor = "atari8")]
 #[path = "atari.rs"]
 mod ui;
 
-// #[cfg(not(target_vendor = "atari8"))]
-// #[path = "sim.rs"]
-// mod ui;
+#[cfg(not(target_vendor = "atari8"))]
+#[path = "sim.rs"]
+mod ui;
 
 use crate::display::DisplayInterface;
 

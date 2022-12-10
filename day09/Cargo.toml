@@ -7,5 +7,7 @@ edition = "2021"
 utils = {path="../utils"}
 ufmt-stdio = "0"
 mos-alloc = "0.2.0"
+
+[target.'cfg(target_vendor = "atari8")'.dependencies]
 volatile-register = "0.2"
 a800xl-utils = "0.2"
