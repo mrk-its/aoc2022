@@ -62,20 +62,23 @@ impl Plane {
         self.data[offs] |= mask;
         pos
     }
-    pub fn mark_head(&mut self, pos: &(i16, i16), on: bool) -> (usize, usize) {
-        let pos = (
-            (pos.0 - self.offs.0) as usize,
-            (pos.1 - self.offs.1) as usize,
-        );
-        let offs = self.align + pos.1 * self.width + pos.0 / 4;
-        let bit_offs = (pos.0 & 3) * 2;
-        let mask = 0x80 >> bit_offs;
-        if on {
-            self.data[offs] |= mask;
-        } else {
-            self.data[offs] &= !mask;
+    #[allow(unused_variables)]
+    pub fn mark_head(&mut self, pos: &(i16, i16), on: bool) {
+        #[cfg(target_vendor = "atari8")]
+        {
+            let pos = (
+                (pos.0 - self.offs.0) as usize,
+                (pos.1 - self.offs.1) as usize,
+            );
+            let offs = self.align + pos.1 * self.width + pos.0 / 4;
+            let bit_offs = (pos.0 & 3) * 2;
+            let mask = 0x80 >> bit_offs;
+            if on {
+                self.data[offs] |= mask;
+            } else {
+                self.data[offs] &= !mask;
+            }
         }
-        pos
     }
     pub fn count(&self) -> usize {
         self.data
@@ -136,18 +139,18 @@ fn main() {
     let moves = utils::iter_lines!("../../input/day09/input.txt")
         .map(|line| (line[0], to_str(&line[2..]).parse::<u8>().unwrap()));
 
-    let mut min = (-94, -12);
-    let mut max = (141, 275);
+    let mut min = (0, 0);
+    let mut max = (0, 0);
 
-    // println!("CHECKING SIZE...");
-    // for (dir, n) in moves.clone() {
-    //     rope.mv(dir, n);
-    //     min.0 = min.0.min(rope.head.0);
-    //     min.1 = min.1.min(rope.head.1);
-    //     max.0 = max.0.max(rope.head.0);
-    //     max.1 = max.1.max(rope.head.1);
-    // }
-    // rope.reset();
+    println!("CHECKING SIZE...");
+    for (dir, n) in moves.clone() {
+        rope.mv(dir, n);
+        min.0 = min.0.min(rope.head.0);
+        min.1 = min.1.min(rope.head.1);
+        max.0 = max.0.max(rope.head.0);
+        max.1 = max.1.max(rope.head.1);
+    }
+    rope.reset();
 
     let w = (max.0 - min.0 + 1 + 127) & !127;
     let h = max.1 - min.1 + 1;
