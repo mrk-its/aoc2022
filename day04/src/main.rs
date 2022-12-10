@@ -6,7 +6,7 @@ use itertools::*;
 use ufmt_stdio::*;
 
 fn main() {
-    let parsed = utils::iter_lines!("input.txt").map(|line| {
+    let parsed = utils::iter_lines!("../../input/day04/input.txt").map(|line| {
         line.split(|c| *c == b',')
             .map(|v| {
                 v.split(|c| *c == b'-')

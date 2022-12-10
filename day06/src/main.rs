@@ -25,7 +25,7 @@ fn start_of_packet(input: &[u8], n: usize) -> Option<usize> {
 }
 
 fn main() {
-    let input = include_bytes!("input.txt");
+    let input = include_bytes!("../../input/day06/input.txt");
 
     let part1 = start_of_packet(input, 4).unwrap();
     assert!(part1 == 1300);

@@ -51,7 +51,7 @@ fn top_items(cranes: &Vec<Vec<u8>>) -> Vec<u8> {
 }
 
 fn main() {
-    let mut input = utils::iter_lines!("input.txt");
+    let mut input = utils::iter_lines!("../../input/day05/input.txt");
     let mut cranes = parse_cranes(&mut input);
     let mut cranes2 = cranes.clone();
 

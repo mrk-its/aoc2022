@@ -6,7 +6,7 @@ use ufmt_stdio::*;
 type Int = i32;
 
 fn main() {
-    let mut input = utils::iter_lines!("part1.txt");
+    let mut input = utils::iter_lines!("../../input/day01/input.txt");
     let mut maxes = [0; 3];
     loop {
         let sum = input

@@ -46,7 +46,7 @@ fn score1(line: &[u8]) -> Score {
 }
 
 fn main() {
-    let input = utils::iter_lines!("input.txt").collect::<Vec<_>>();
+    let input = utils::iter_lines!("../../input/day03/input.txt").collect::<Vec<_>>();
     let part1 = input.iter().cloned().map(score1).sum::<Score>();
     assert!(part1 == 8153);
     println!("PART1: {}", part1);

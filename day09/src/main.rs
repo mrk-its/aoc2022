@@ -133,7 +133,7 @@ fn main() {
     let mut rope = Rope::new();
     mos_alloc::set_limit(20000);
 
-    let moves = utils::iter_lines!("input.txt")
+    let moves = utils::iter_lines!("../../input/day09/input.txt")
         .map(|line| (line[0], to_str(&line[2..]).parse::<u8>().unwrap()));
 
     let mut min = (-94, -12);

@@ -78,7 +78,7 @@ fn main() {
 
     let mut offs = 0;
 
-    for line in utils::iter_lines!("input.txt") {
+    for line in utils::iter_lines!("../../input/day08/input.txt") {
         trees.trees[offs..offs + line.len()].copy_from_slice(line);
         offs += line.len();
         trees.size = line.len();

@@ -122,7 +122,7 @@ fn main() {
     mos_alloc::set_limit(20000);
     let mut fs = FileSystem::new();
 
-    for line in utils::iter_lines!("input.txt") {
+    for line in utils::iter_lines!("../../input/day07/input.txt") {
         if line.starts_with(b"$ ") {
             let line = &line[2..];
             if line.starts_with(b"cd ") {

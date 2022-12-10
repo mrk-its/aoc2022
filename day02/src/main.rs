@@ -22,7 +22,7 @@ fn score2(pair: Pair) -> Score {
 }
 
 fn main() {
-    let input = utils::iter_lines!("input.txt").map(parse_line);
+    let input = utils::iter_lines!("../../input/day02/input.txt").map(parse_line);
     let part1 = input.clone().map(score).sum::<Score>();
     assert!(part1 == 13268);
     println!("PART1: {}", part1);
