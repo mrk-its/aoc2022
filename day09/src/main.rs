@@ -2,6 +2,18 @@
 #![feature(start)]
 #![feature(default_alloc_error_handler)]
 
+pub mod display;
+
+// #[cfg(target_vendor = "atari8")]
+#[path = "atari.rs"]
+mod ui;
+
+// #[cfg(not(target_vendor = "atari8"))]
+// #[path = "sim.rs"]
+// mod ui;
+
+use crate::display::DisplayInterface;
+
 utils::entry!(main);
 extern crate alloc;
 
@@ -16,29 +28,61 @@ struct Rope {
 }
 struct Plane {
     data: Vec<u8>,
+    align: usize,
     width: usize,
     offs: (i16, i16),
 }
 impl Plane {
     pub fn new(w: usize, h: usize, offs: (i16, i16)) -> Self {
-        let width = (w + 7) / 8;
+        let width = w / 4;
         let size = width * h;
-        let mut data = Vec::with_capacity(size);
-        data.resize(size, 0);
-        Plane { data, width, offs }
+        let mut data = Vec::with_capacity(size + width);
+        data.resize(size + width, 0);
+
+        let align = 64 - (data.as_ptr() as usize & 63);
+
+        Plane {
+            data,
+            width,
+            offs,
+            align,
+        }
     }
     pub fn clean(&mut self) {
         self.data.fill(0);
     }
-    pub fn mark(&mut self, pos: &(i16, i16)) {
+    pub fn mark(&mut self, pos: &(i16, i16)) -> (usize, usize) {
         let pos = (
             (pos.0 - self.offs.0) as usize,
             (pos.1 - self.offs.1) as usize,
         );
-        let offs = pos.1 * self.width + pos.0 / 8;
-        let bit_offs = pos.0 & 7;
-        let mask = 0x80 >> bit_offs;
+        let offs = self.align + pos.1 * self.width + pos.0 / 4;
+        let bit_offs = (pos.0 & 3) * 2;
+        let mask = 0x40 >> bit_offs;
         self.data[offs] |= mask;
+        pos
+    }
+    pub fn mark_head(&mut self, pos: &(i16, i16), on: bool) -> (usize, usize) {
+        let pos = (
+            (pos.0 - self.offs.0) as usize,
+            (pos.1 - self.offs.1) as usize,
+        );
+        let offs = self.align + pos.1 * self.width + pos.0 / 4;
+        let bit_offs = (pos.0 & 3) * 2;
+        let mask = 0x80 >> bit_offs;
+        if on {
+            self.data[offs] |= mask;
+        } else {
+            self.data[offs] &= !mask;
+        }
+        pos
+    }
+    pub fn count(&self) -> usize {
+        self.data
+            .iter()
+            .flat_map(|b| (0..4).map(|v| (*b >> v * 2) & 1))
+            .filter(|&v| v > 0)
+            .count()
     }
 }
 
@@ -92,47 +136,54 @@ fn main() {
     let moves = utils::iter_lines!("input.txt")
         .map(|line| (line[0], to_str(&line[2..]).parse::<u8>().unwrap()));
 
-    let mut min = (0, 0);
-    let mut max = (0, 0);
+    let mut min = (-94, -12);
+    let mut max = (141, 275);
 
-    for (dir, n) in moves.clone() {
-        rope.mv(dir, n);
-        min.0 = min.0.min(rope.head.0);
-        min.1 = min.1.min(rope.head.1);
-        max.0 = max.0.max(rope.head.0);
-        max.1 = max.1.max(rope.head.1);
-    }
-    rope.reset();
+    // println!("CHECKING SIZE...");
+    // for (dir, n) in moves.clone() {
+    //     rope.mv(dir, n);
+    //     min.0 = min.0.min(rope.head.0);
+    //     min.1 = min.1.min(rope.head.1);
+    //     max.0 = max.0.max(rope.head.0);
+    //     max.1 = max.1.max(rope.head.1);
+    // }
+    // rope.reset();
 
-    let w = max.0 - min.0 + 1;
+    let w = (max.0 - min.0 + 1 + 127) & !127;
     let h = max.1 - min.1 + 1;
 
     let mut plane = Plane::new(w as usize, h as usize, min);
+
+    let mut display = ui::Display::init(
+        w as usize,
+        h as usize,
+        plane.data[plane.align..].as_ptr() as *const u8,
+    );
+
     plane.mark(&rope.tail);
 
     for (dir, n) in moves.clone() {
         for _ in 0..n {
             let pos = rope.step(dir);
+            plane.mark_head(&rope.head, false);
             if rope.mv_to(&pos) {
-                // println!("tail: {} {}", tail_pos.0, tail_pos.1);
-                plane.mark(&rope.tail);
+                plane.mark_head(&rope.head, true);
+                let abs_pos = plane.mark(&rope.tail);
+                display.scroll_to(abs_pos.0, abs_pos.1);
             }
         }
     }
-
-    let part1 = plane
-        .data
-        .iter()
-        .flat_map(|b| (0..8).map(|v| (*b >> v) & 1))
-        .filter(|&v| v > 0)
-        .count();
+    display.hide();
+    print!("PART1: ");
+    let part1 = plane.count();
+    assert!(part1 == 6057);
+    println!("{}", part1);
 
     let mut ropes = [Rope::new(); 9];
     plane.clean();
     plane.mark(&ropes[0].tail);
 
-    assert!(part1 == 6057);
-    println!("PART1: {}", part1);
+    display.show();
 
     for (dir, n) in moves.clone() {
         for _ in 0..n {
@@ -140,10 +191,13 @@ fn main() {
             let mut moved = true;
             for (n, rope) in ropes.iter_mut().enumerate() {
                 if moved {
+                    plane.mark_head(&rope.head, false);
                     moved = rope.mv_to(&pos);
+                    plane.mark_head(&rope.head, true);
                     pos = rope.tail;
                     if n == 8 && moved {
-                        plane.mark(&rope.tail);
+                        let abs_pos = plane.mark(&rope.tail);
+                        display.scroll_to(abs_pos.0, abs_pos.1);
                     }
                 } else {
                     break;
@@ -151,13 +205,9 @@ fn main() {
             }
         }
     }
-
-    let part2 = plane
-        .data
-        .iter()
-        .flat_map(|b| (0..8).map(|v| (*b >> v) & 1))
-        .filter(|&v| v > 0)
-        .count();
+    display.hide();
+    print!("PART2: ");
+    let part2 = plane.count();
     assert!(part2 == 2514);
-    println!("PART2: {}", part2);
+    println!("{}", part2);
 }
