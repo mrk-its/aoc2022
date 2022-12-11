@@ -3,16 +3,16 @@ CARGO_OPTS=--release
 DOS_ATR_TEMPLATE=data/dos2d64.atr
 PROJECT=$(basename $(notdir $@))
 SET1=day01 day02 day03 day04 day05 day06 day07 day08
-SET2=day09 day10
+SET2=day09 day10 day11
 
-all: $(addsuffix .xex,$(addprefix $(TARGET_DIR)/,$(wildcard day??))) $(addprefix $(TARGET_DIR)/,$(wildcard part?.atr))
+all: $(addsuffix .xex,$(addprefix $(TARGET_DIR)/,$(wildcard day??))) $(addprefix $(TARGET_DIR)/,part1.atr part2.atr)
 
-$(TARGET_DIR)/part1.atr:$(addprefix $(TARGET_DIR)/,$(SET1))
+$(TARGET_DIR)/part1.atr: $(addprefix $(TARGET_DIR)/,$(SET1)) $(DOS_ATR_TEMPLATE)
 	cp $(DOS_ATR_TEMPLATE) $@.tmp
 	for name in $(SET1); do atr $@.tmp put $(TARGET_DIR)/$$name $$name.com; done
 	mv $@.tmp $@
 
-$(TARGET_DIR)/part2.atr:$(addprefix $(TARGET_DIR)/,$(SET2))
+$(TARGET_DIR)/part2.atr: $(addprefix $(TARGET_DIR)/,$(SET2)) $(DOS_ATR_TEMPLATE)
 	cp $(DOS_ATR_TEMPLATE) $@.tmp
 	for name in $(SET2); do atr $@.tmp put $(TARGET_DIR)/$$name $$name.com; done
 	mv $@.tmp $@

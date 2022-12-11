@@ -13,18 +13,19 @@ utils::entry!(main);
 use ufmt_stdio::*;
 use utils::to_str;
 
-type Int = i64;
+type Int = i32;
+type BigInt = i64;
 
 struct Monkey {
-    index: usize,
     items: Vec<Int>,
-    op: Box<dyn Fn(Int) -> Int>,
-    divider: Int,
+    op: Box<dyn Fn(BigInt) -> BigInt>,
+    divider: u8,
     monkey_if_true: usize,
     monkey_if_false: usize,
     cnt: Int,
 }
 
+// Hack for no symbol found during linking
 #[no_mangle]
 extern "C" fn __multi3(_a: i64, _b: i64) -> i64 {
     panic!();
@@ -36,7 +37,6 @@ impl uDebug for Monkey {
         W: uWrite + ?Sized,
     {
         let mut builder = formatter.debug_struct("Monkey")?;
-        builder.field("index", &self.index)?;
         builder.field("items", &self.items.as_slice())?;
         builder.field("divider", &self.divider)?;
         builder.field("monkey_if_true", &self.monkey_if_true)?;
@@ -46,50 +46,46 @@ impl uDebug for Monkey {
     }
 }
 
+#[inline(never)]
+fn parse_int(txt: &[u8]) -> Int {
+    to_str(txt).parse::<u8>().unwrap() as Int
+}
+#[inline(never)]
+fn next_line<'a>(iter: &mut impl Iterator<Item = &'a [u8]>, index: usize) -> &'a [u8] {
+    &iter.next().unwrap()[index..]
+}
 fn parse<'a>(mut input: impl Iterator<Item = &'a [u8]>) -> Vec<Monkey> {
     let mut monkeys = Vec::<Monkey>::with_capacity(10);
-    // let mut input = utils::iter_lines!("../../input/day11/input.txt");
 
     loop {
-        let index = match input.next() {
-            Some(line) => to_str(&line[7..line.len() - 1]).parse::<usize>().unwrap(),
-            None => break,
-        };
-        let items = to_str(&input.next().unwrap()[18..])
-            .split(", ")
-            .map(|f| f.parse().unwrap())
+        if input.next().is_none() {
+            break;
+        }
+        let items = next_line(&mut input, 18)
+            .split(|&c| c == b',' || c == b' ')
+            .filter(|v| v.len() > 0)
+            .map(parse_int)
             .collect::<Vec<Int>>();
 
-        let op_txt = &input.next().unwrap()[19..];
-        let op: Box<dyn Fn(Int) -> Int> = if op_txt == b"old * old" {
-            Box::new(move |old: Int| old * old)
-        } else if op_txt.starts_with(b"old * ") {
-            let arg: Int = to_str(&op_txt[6..]).parse().unwrap();
-            Box::new(move |old: Int| old * arg)
-        } else if op_txt.starts_with(b"old + ") {
-            let arg: Int = to_str(&op_txt[6..]).parse().unwrap();
-            Box::new(move |old: Int| old + arg)
+        let op_txt = next_line(&mut input, 23);
+        let op: Box<dyn Fn(BigInt) -> BigInt> = if op_txt == b"* old" {
+            Box::new(move |old: BigInt| old * old)
+        } else if op_txt[0] == b'*' {
+            let arg = parse_int(&op_txt[2..]) as BigInt;
+            Box::new(move |old: BigInt| old * arg)
+        } else if op_txt[0] == b'+' {
+            let arg = parse_int(&op_txt[2..]) as BigInt;
+            Box::new(move |old: BigInt| old + arg)
         } else {
             unreachable!();
         };
-        let test_txt = &input.next().unwrap()[8..];
-        let divider = match &test_txt[0..3] {
-            b"div" => to_str(&test_txt[13..]).parse::<Int>().unwrap(),
-            _ => unreachable!(),
-        };
-        let if_true = &input.next().unwrap()[4..];
-        let if_false = &input.next().unwrap()[4..];
-
-        assert!(if_true.starts_with(b"If true:"));
-        assert!(if_false.starts_with(b"If false:"));
-
-        let monkey_if_true = to_str(&if_true[25..]).parse().unwrap();
-        let monkey_if_false = to_str(&if_false[26..]).parse().unwrap();
+        let divider = parse_int(next_line(&mut input, 21)) as u8;
+        let monkey_if_true = parse_int(next_line(&mut input, 29)) as usize;
+        let monkey_if_false = parse_int(next_line(&mut input, 30)) as usize;
 
         input.next();
 
         let monkey = Monkey {
-            index,
             items,
             op,
             divider,
@@ -102,21 +98,23 @@ fn parse<'a>(mut input: impl Iterator<Item = &'a [u8]>) -> Vec<Monkey> {
     monkeys
 }
 
-fn play(mut monkeys: Vec<Monkey>, n_rounds: usize, divider: Int) -> Int {
-    let dividers: Vec<_> = monkeys.iter().map(|m| m.divider).collect();
-    let mult = dividers.iter().fold(1, |acc, val| acc * val);
+fn play(mut monkeys: Vec<Monkey>, n_rounds: usize, divider: u8) -> BigInt {
+    let dividers: Vec<_> = monkeys.iter().map(|m| m.divider as i32).collect();
+    let mult = dividers.iter().fold(1, |acc, val| acc * val) as BigInt;
 
-    // let mut tmp = Vec::<Int>::with_capacity(100);
+    let mut tmp = Vec::<Int>::with_capacity(40);
 
     for round in 0..n_rounds {
         for index in 0..monkeys.len() {
-            for worry_level in &monkeys[index].items.drain(..).collect::<Vec<_>>() {
+            tmp.clear();
+            tmp.extend(monkeys[index].items.drain(..));
+            for worry_level in &tmp {
                 monkeys[index].cnt += 1;
-                let mut next_level = (monkeys[index].op)(*worry_level) % mult;
+                let mut next_level = ((monkeys[index].op)(*worry_level as BigInt) % mult) as Int;
                 if divider > 1 {
-                    next_level /= divider;
+                    next_level /= divider as Int;
                 }
-                let next_monkey = if next_level % monkeys[index].divider == 0 {
+                let next_monkey = if next_level % monkeys[index].divider as Int == 0 {
                     monkeys[index].monkey_if_true
                 } else {
                     monkeys[index].monkey_if_false
@@ -128,15 +126,12 @@ fn play(mut monkeys: Vec<Monkey>, n_rounds: usize, divider: Int) -> Int {
             println!("round #{}", round);
         }
     }
-    let mut counts = monkeys.iter().map(|m| m.cnt).collect::<Vec<_>>();
+    let mut counts = monkeys.iter().map(|m| m.cnt as i32).collect::<Vec<_>>();
     counts.sort_by_key(|i| -i);
-    counts[0] * counts[1]
+    counts[0] as BigInt * counts[1] as BigInt
 }
 
 fn main() {
-    // #[cfg(target_arch = "mos")]
-    // mos_alloc::set_limit(20000);
-
     let iter = utils::iter_lines!("../../input/day11/input.txt");
 
     let part1 = play(parse(iter.clone()), 20, 3);
