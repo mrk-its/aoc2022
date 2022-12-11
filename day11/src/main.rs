@@ -8,6 +8,9 @@ use alloc::vec::Vec;
 #[allow(unused_imports)]
 use mos_alloc;
 
+#[cfg(target_vendor = "atari8")]
+use a800xl_utils::clock;
+
 utils::entry!(main);
 
 use ufmt_stdio::*;
@@ -132,6 +135,9 @@ fn play(mut monkeys: Vec<Monkey>, n_rounds: usize, divider: u8) -> BigInt {
 }
 
 fn main() {
+    #[cfg(target_vendor = "atari8")]
+    let start_t = clock();
+
     let iter = utils::iter_lines!("../../input/day11/input.txt");
 
     let part1 = play(parse(iter.clone()), 20, 3);
@@ -141,4 +147,11 @@ fn main() {
     let part2 = play(parse(iter), 10000, 1);
     assert_eq!(part2, 14106266886);
     println!("PART2: {}", part2);
+
+    #[cfg(target_vendor = "atari8")]
+    {
+        let ticks = clock() - start_t;
+        let seconds = ticks / 50;
+        println!("ticks: {} ({} seconds)", ticks, seconds);
+    }
 }
