@@ -17,35 +17,94 @@ use crate::display::DisplayInterface;
 utils::entry!(main);
 extern crate alloc;
 
-use ufmt_stdio::*;
+use ufmt_stdio::{ufmt::derive::uDebug, *};
 
-include!(concat!(env!("OUT_DIR"), "/input.rs"));
-
-fn get(memory: &mut [u8], p: &(i16, i16)) -> bool {
-    let mask = 0x80 >> (p.0 & 7);
-    (memory[p.1 as usize * 40 + p.0 as usize / 8] & mask) > 0
+#[derive(PartialEq, uDebug, Clone, Copy)]
+struct Pixel {
+    ptr: *mut u8,
+    mask: u8,
 }
 
-fn plot(memory: &mut [u8], p: &(i16, i16)) {
-    let mask = 0x80 >> (p.0 & 7);
-    memory[p.1 as usize * 40 + p.0 as usize / 8] |= mask;
-}
-fn clear(memory: &mut [u8], p: &(i16, i16)) {
-    let mask = 0x80 >> (p.0 & 7);
-    memory[p.1 as usize * 40 + p.0 as usize / 8] &= !mask;
-}
-
-fn draw_line(memory: &mut [u8], start: &(i16, i16), end: &(i16, i16)) {
-    let mut start = *start;
-    let dx = (end.0 - start.0).signum();
-    let dy = (end.1 - start.1).signum();
-    plot(memory, &start);
-    while &start != end {
-        start.0 += dx;
-        start.1 += dy;
-        plot(memory, &start);
+impl PartialOrd for Pixel {
+    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
+        match self.ptr.partial_cmp(&other.ptr) {
+            Some(core::cmp::Ordering::Equal) => {}
+            ord => return ord,
+        }
+        other.mask.partial_cmp(&self.mask)
     }
 }
+
+impl Pixel {
+    fn from_coords(memory: *mut u8, &(x, y): &(i16, i16)) -> Self {
+        let ptr = unsafe { memory.add(y as usize * 40 + x as usize / 8) };
+        let mask = 0x80 >> (x as u8 & 7);
+        Pixel { ptr, mask }
+    }
+    fn relative(&self, dx: isize, dy: isize) -> Pixel {
+        let offs = if dy == 1 {
+            40
+        } else if dy == -1 {
+            -40
+        } else {
+            0
+        };
+        let mut ptr = unsafe { self.ptr.offset(offs) };
+        let mask = if dx == 1 {
+            let mask = self.mask.rotate_right(1);
+            if mask == 0x80 {
+                ptr = unsafe { ptr.add(1) };
+            }
+            mask
+        } else if dx == -1 {
+            let mask = self.mask.rotate_left(1);
+            if mask == 1 {
+                ptr = unsafe { ptr.sub(1) };
+            }
+            mask
+        } else {
+            self.mask
+        };
+        Pixel { ptr, mask }
+    }
+    fn get(&self) -> bool {
+        return unsafe { (*self.ptr & self.mask) > 0 };
+    }
+    fn clear(&mut self) {
+        unsafe {
+            *self.ptr &= !self.mask;
+        }
+    }
+    fn set(&mut self) {
+        //println!("set {:?}", self);
+        unsafe {
+            *self.ptr |= self.mask;
+        }
+    }
+    fn line_to(&self, dst: &Pixel) {
+        let mut dst = *dst;
+        let mut start = *self;
+        if start > dst {
+            (start, dst) = (dst, start);
+        }
+        start.set();
+        if start == dst {
+            return;
+        }
+        let (dx, dy) = if (dst.ptr as usize) - (start.ptr as usize) < 40 {
+            (1, 0)
+        } else {
+            (0, 1)
+        };
+
+        while start != dst {
+            start = start.relative(dx, dy);
+            start.set();
+        }
+    }
+}
+
+include!(concat!(env!("OUT_DIR"), "/input.rs"));
 
 fn shift(pt: &(i16, i16)) -> (i16, i16) {
     return (160 + pt.0 - 500, pt.1);
@@ -55,38 +114,39 @@ fn main() {
     mos_alloc::set_limit(10000);
     let mut display = ui::Display::init();
 
-    let memory = unsafe {
-        let mem = display.get_screen_memory().add(0);
-        core::slice::from_raw_parts_mut(mem, 200 * 40)
-    };
+    let memory = display.get_screen_memory();
     let mut max_y = 0;
 
     for &line in POINTS {
         let mut iter = line.iter().map(shift);
-        let mut start = iter.next().unwrap();
+        let start = iter.next().unwrap();
+        let mut pt = Pixel::from_coords(memory, &start);
         max_y = max_y.max(start.1);
         for end in iter {
+            let dst = Pixel::from_coords(memory, &end);
             max_y = max_y.max(end.1);
-            draw_line(memory, &start, &end);
-            start = end;
-            max_y = max_y.max(start.1).max(end.1)
+            pt.line_to(&dst);
+            pt = dst;
+            max_y = max_y.max(end.1);
         }
     }
+
     let mut count = 0;
+    let max_y_pt = Pixel::from_coords(memory, &(0, max_y + 2));
     loop {
         display.clear_atract();
-        let mut pt = shift(&(500, 0));
-        if get(memory, &pt) {
+        let mut pt = Pixel::from_coords(memory, &shift(&(500, 0)));
+        if pt.get() {
             println!("PART2: {}", count);
             break;
         }
         loop {
-            plot(memory, &pt);
+            pt.set();
             let mut moved = false;
             for dx in [0, -1, 1] {
-                let dst = (pt.0 + dx, pt.1 + 1);
-                if !get(memory, &dst) {
-                    clear(memory, &pt);
+                let dst = pt.relative(dx, 1);
+                if !dst.get() {
+                    pt.clear();
                     pt = dst;
                     moved = true;
                     break;
@@ -95,9 +155,10 @@ fn main() {
             if !moved {
                 count += 1;
                 break;
-            } else if pt.1 > max_y + 2 {
+            } else if pt >= max_y_pt {
                 println!("PART1: {}", count);
-                draw_line(memory, &(0, max_y + 2), &(319, max_y + 2));
+                Pixel::from_coords(memory, &(0, max_y + 2))
+                    .line_to(&Pixel::from_coords(memory, &(319, max_y + 2)));
                 break;
             }
         }
