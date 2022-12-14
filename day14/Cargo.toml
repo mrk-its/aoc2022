@@ -1,0 +1,13 @@
+[package]
+name = "day14"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+utils = {path="../utils"}
+ufmt-stdio = "0"
+mos-alloc = "0.2.0"
+itertools = {version="0", default-features=false}
+[target.'cfg(target_vendor = "atari8")'.dependencies]
+a800xl-utils = "0.2"
+
