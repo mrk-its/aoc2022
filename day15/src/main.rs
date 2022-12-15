@@ -34,8 +34,11 @@ fn perimeter(mid: (i32, i32), r: i32) -> impl Iterator<Item = (i32, i32)> {
 }
 
 fn main() {
-    const PART2_SIZE: i32 = 4000000;
     const PART1_ROW: i32 = 2000000;
+    const PART2_SIZE: i32 = 4000000;
+
+    //const PART1_ROW: i32 = 10;
+    //const PART2_SIZE: i32 = 20;
 
     let sensors = utils::iter_lines!("../../input/day15/input.txt")
         .map(|line| {
@@ -66,25 +69,28 @@ fn main() {
         max_dist = max_dist.max(sensor.dist);
     }
 
-    let all_outside = |pos: &(i32, i32)| {
-        sensors
-            .iter()
-            .map(|s| manhatan_dist(*pos, s.sensor) > s.dist && s.becon != *pos)
-            .all(|f| f)
-    };
-
     let part1 = (-min_x - max_dist..max_x + max_dist)
         .map(|x| (x, PART1_ROW))
-        .map(|pos| !all_outside(&pos) as i32)
+        .map(|pos| {
+            sensors
+                .iter()
+                .map(|s| manhatan_dist(pos, s.sensor) <= s.dist && pos != s.becon)
+                .any(|f| f) as i32
+        })
         .sum::<i32>();
-    assert!(part1 == 5100464);
+    assert!(part1 == 5100463);
     println!("PART1: {}", part1);
 
     let out = sensors
         .iter()
         .flat_map(|s| perimeter(s.sensor, s.dist + 1))
         .filter(|v| v.0 >= 0 && v.0 <= PART2_SIZE && v.1 >= 0 && v.1 <= PART2_SIZE)
-        .filter(all_outside)
+        .filter(|pos| {
+            sensors
+                .iter()
+                .map(|s| manhatan_dist(*pos, s.sensor) > s.dist)
+                .all(|f| f)
+        })
         .next()
         .unwrap();
 
