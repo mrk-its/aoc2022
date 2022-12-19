@@ -1,0 +1,8 @@
+[package]
+name = "cycle_bug"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+utils = {path="../utils"}
+ufmt-stdio = "0"
