@@ -23,7 +23,7 @@ struct Inventory {
     obsydian: isize,
     geode: isize,
 }
-
+#[derive(Default, Clone, uDebug)]
 struct Blueprint {
     id: isize,
     ore_robot_ore: isize,
@@ -38,7 +38,7 @@ struct Blueprint {
 const SPACE: &[u8] = b"                              ";
 
 fn turn(blueprint: &Blueprint, inventory: Inventory, t: isize, best_inventory: &mut Inventory) {
-    // println!("{} {} {:?}", to_str(&SPACE[0..t]), t, inventory);
+    // println!("{} {} {:?}", to_str(&SPACE[0..t as usize]), t, inventory);
     if t == 0 {
         if inventory.geode >= best_inventory.geode {
             // println!("best inventory: {:?}", inventory);
@@ -46,6 +46,7 @@ fn turn(blueprint: &Blueprint, inventory: Inventory, t: isize, best_inventory: &
         }
         return;
     }
+
     let mut new_inventory = inventory.clone();
     new_inventory.ore += new_inventory.ore_robots;
     new_inventory.clay += new_inventory.clay_robots;
@@ -59,36 +60,27 @@ fn turn(blueprint: &Blueprint, inventory: Inventory, t: isize, best_inventory: &
     let missing_clay = (blueprint.obsydian_robot_clay - inventory.clay).max(0);
     let missing_obsydian = (blueprint.geode_robot_obsydian - inventory.obsydian).max(0);
 
-    let min_res = *[
-        missing_ore1,
-        missing_ore2,
-        missing_ore3,
-        missing_ore4,
-        missing_clay,
-        missing_obsydian,
-    ]
-    .iter()
-    .min()
-    .unwrap();
+    //  check if the current branch could improve on the best solution so far: if you assume it can and will create a geode robot every minute from now on
+    // https://www.reddit.com/r/adventofcode/comments/zpy5rm/comment/j0vzi7h/?utm_source=reddit&utm_medium=web2x&context=3
+    let may_improve = (inventory.geode + (inventory.geode_robots * (t - 1)) + ((t - 1) * t) / 2)
+        > best_inventory.geode;
 
-    // let c2 = inventory.ore - blueprint.clay_robot_ore;
     let c3 = missing_clay == 0 && missing_ore3 == 0;
     let c4 = missing_obsydian == 0 && missing_ore4 == 0;
-    // if !c1 || !c2 || !c3 || !c3 {
-    // turn(blueprint, new_inventory.clone(), t - 1, best_inventory);
-    // }
     if !(missing_ore1 == 0 && missing_ore2 == 0 && c3 && c4) {
         turn(blueprint, new_inventory.clone(), t - 1, best_inventory);
     }
-    if c4 {
+
+    if c4 && may_improve {
         let mut inventory = new_inventory.clone();
-        // inventory.geode += t - 1;
-        inventory.geode_robots += 1;
+        inventory.geode += t - 1;
+        // inventory.geode_robots += 1;
         inventory.ore -= blueprint.geode_robot_ore;
         inventory.obsydian -= blueprint.geode_robot_obsydian;
         turn(blueprint, inventory, t - 1, best_inventory)
     } else if c3
         && inventory.obsydian + inventory.obsydian_robots * t < t * blueprint.geode_robot_obsydian
+        && may_improve
     {
         let mut inventory = new_inventory.clone();
         inventory.obsydian_robots += 1;
@@ -96,7 +88,10 @@ fn turn(blueprint: &Blueprint, inventory: Inventory, t: isize, best_inventory: &
         inventory.clay -= blueprint.obsydian_robot_clay;
         turn(blueprint, inventory, t - 1, best_inventory);
     } else {
-        if missing_ore1 == 0 && inventory.ore + inventory.ore_robots * t < t * blueprint.max_ore {
+        if missing_ore1 == 0
+            && inventory.ore + inventory.ore_robots * t < t * blueprint.max_ore
+            && may_improve
+        {
             let mut inventory = new_inventory.clone();
             inventory.ore_robots += 1;
             inventory.ore -= blueprint.ore_robot_ore;
@@ -104,6 +99,7 @@ fn turn(blueprint: &Blueprint, inventory: Inventory, t: isize, best_inventory: &
         }
         if missing_ore2 == 0
             && inventory.clay + inventory.clay_robots * t < t * blueprint.obsydian_robot_clay
+            && may_improve
         {
             let mut inventory = new_inventory.clone();
             inventory.clay_robots += 1;
@@ -134,9 +130,11 @@ fn main() {
     });
     let mut part1 = 0;
     for blueprint in blueprints.clone() {
+        println!("{:?}", blueprint);
         let mut best_inventory = Inventory::default();
         let mut inventory = Inventory::default();
         inventory.ore_robots = 1;
+
         turn(&blueprint, inventory, 24, &mut best_inventory);
         println!("#{} {:?}", blueprint.id, best_inventory);
         part1 += blueprint.id * best_inventory.geode;
@@ -148,7 +146,8 @@ fn main() {
     //     let mut best_inventory = Inventory::default();
     //     let mut inventory = Inventory::default();
     //     inventory.ore_robots = 1;
-    //     turn(&blueprint, inventory, 32, &mut best_inventory);
+    //     inventory.ore += inventory.ore_robots;
+    //     turn(&blueprint, inventory, 31, &mut best_inventory);
     //     println!("#{} {:?}", blueprint.id, best_inventory);
     //     part2 *= best_inventory.geode;
     // }
