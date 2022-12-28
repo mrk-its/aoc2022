@@ -1,8 +1,10 @@
 [build]
 target = "mos-sim-none"
+# rustflags = ["-C", "link-args=-Wl,--save-temps"]
 
 [target.mos-sim-none]
 runner = ["mos-sim", "--cycles"]
 
 [unstable]
 build-std = ["core", "alloc"]
+build-std-features = ["panic_immediate_abort"]

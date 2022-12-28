@@ -70,35 +70,19 @@ fn show_chamber(chamber: &Vec<u8>) {
     println!();
 }
 
-// TODO: investigate why iter().cycle() doesn't work for u8 slices!
-struct Cycle {
-    offset: usize,
-    data: &'static [u8],
-}
-
-impl Iterator for Cycle {
-    type Item = u8;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let x = Some(self.data[self.offset]);
-        self.offset = self.offset + 1;
-        if self.offset == self.data.len() {
-            self.offset = 0;
-        }
-        x
-    }
-}
-
 fn main() {
     #[cfg(target_arch = "mos")]
     mos_alloc::set_limit(20000);
-    let mut jets = Cycle {
-        offset: 0,
-        data: utils::iter_lines!("../../input/day17/test.txt")
-            .next()
-            .unwrap(),
-    }
-    .map(|v| v as i8 - 61);
+
+    // investigate why iter.cycle() doesn't work with debug
+    // in release mode it stops working after turning off `panic_immediate_abort`
+
+    let mut jets = utils::iter_lines!("../../input/day17/test.txt")
+        .next()
+        .unwrap()
+        .iter()
+        .cycle()
+        .map(|&v| v as i8 - 61);
 
     let shapes = SHAPES.iter().cycle();
 
