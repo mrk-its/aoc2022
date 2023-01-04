@@ -1,16 +1,19 @@
 #![no_std]
-#![feature(start)]
+#![no_main]
 
-utils::entry!(main);
+#[allow(unused_imports)]
+use utils;
 
-extern "C" {
-    fn __putchar(c: u8);
-}
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() {}
 
-const DATA: &[u8] = b"ab";
-fn main() {
-    let mut iter = DATA.iter().cycle();
-    for _ in 0..4 {
-        unsafe { __putchar(*iter.next().unwrap()) };
+#[mos_test::tests]
+mod tests {
+    #[test]
+    pub fn cycle_bug() {
+        const DATA: &[u8] = b"ab";
+
+        assert_eq!(DATA.iter().cycle().skip(2).next(), Some(&b'a'));
     }
 }

@@ -6,3 +6,9 @@ edition = "2021"
 [dependencies]
 utils = {path="../utils"}
 ufmt-stdio = "0"
+mos-test = {path="../mos_test"}
+
+
+[[bin]]
+name = "cycle_bug"
+harness = false
