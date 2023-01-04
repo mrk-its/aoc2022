@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "cycle_bug",
+    "product_bug",
     "day01",
     "day02",
     "day03",

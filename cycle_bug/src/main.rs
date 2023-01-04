@@ -3,13 +3,14 @@
 
 utils::entry!(main);
 
-use ufmt_stdio::*;
+extern "C" {
+    fn __putchar(c: u8);
+}
 
 const DATA: &[u8] = b"ab";
 fn main() {
-    if DATA.iter().cycle().skip(2).next().is_some() {
-        println!("ok");
-    } else {
-        println!("err");
+    let mut iter = DATA.iter().cycle();
+    for _ in 0..4 {
+        unsafe { __putchar(*iter.next().unwrap()) };
     }
 }

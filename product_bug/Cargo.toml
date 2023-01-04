@@ -1,0 +1,9 @@
+[package]
+name = "product_bug"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+utils = {path="../utils"}
+ufmt-stdio = "0"
+itertools = {version="0", default-features=false}
