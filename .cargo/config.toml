@@ -1,6 +1,7 @@
 [build]
 target = "mos-sim-none"
 # rustflags = ["-C", "link-args=-Wl,--save-temps"]
+rustflags = ["-C", "link-args=-Wl,--allow-multiple-definition"]
 
 [target.mos-sim-none]
 runner = ["mos-sim", "--cycles"]
