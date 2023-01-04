@@ -8,3 +8,15 @@ edition = "2021"
 [dependencies]
 utils = {path="../utils"}
 ufmt-stdio = "0"
+mos-test = {path="../mos_test"}
+
+# defmt-test = {version = "0", default-features=false}
+
+
+[[test]]
+name = "my-test"
+harness = false
+
+[[bin]]
+name = "day01"
+harness = false

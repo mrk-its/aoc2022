@@ -1,0 +1,19 @@
+[package]
+authors = ["mrk"]
+description = "mos-test macros"
+edition = "2021"
+keywords = ["mos", "testing"]
+license = "MIT OR Apache-2.0"
+name = "mos-test-macros"
+version = "0.1.0"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1"
+quote = "1"
+syn = { version = "1", features = ["extra-traits", "full"] }
+
+[dev-dependencies]
+trybuild = "1"
