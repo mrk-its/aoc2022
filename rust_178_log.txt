@@ -1,0 +1,303 @@
+day01:
+  PART1: 69626
+  PART2: 206780
+  16915067 cycles
+release:
+  PART1: 69626
+  PART2: 206780
+  5142715 cycles
+ref:
+  PART1: 69626
+  PART2: 206780
+  17112063 cycles
+release:
+  PART1: 69626
+  PART2: 206780
+  8377272 cycles
+
+day02:
+  PART1: 13268
+  PART2: 15508
+  2533291 cycles
+release:
+  PART1: 13268
+  PART2: 15508
+  2223360 cycles
+
+ref:
+  PART1: 13268
+  PART2: 15508
+  2992187 cycles
+release:
+  PART1: 13268
+  PART2: 15508
+  2876269 cycles
+
+day03:
+  LLVM ERROR: unable to legalize instruction: G_STORE %20:_(<8 x s8>), %4:_(p0) :: (store (<8 x s8>) into %ir.3, !alias.scope !175) (in function: _ZN5day039intersect17hf1997dc8f0df5b4eE)
+  warning: `day03` (bin "day03") generated 1 warning
+  error: could not compile `day03` (bin "day03"); 1 warning emitted
+
+ref:
+  PART1: 8153
+  PART2: 2342
+  3585676 cycles
+release:
+  PART1: 8153
+  PART2: 2342
+  3435428 cycles
+
+day04:
+  PART1: 485
+  PART2: 857
+  17726565 cycles
+release:
+  PART1: 485
+  PART2: 857
+  10639617 cycles
+
+ref:
+  PART1: 485
+  PART2: 857
+  17995172 cycles
+release:
+  PART1: 485
+  PART2: 857
+  13873701 cycles
+
+day05:
+  error: could not compile `day05` (bin "day05")
+
+  Caused by:
+    process didn't exit successfully: `/home/mos/.rustup/toolchains/mos/bin/rustc --crate-name day05 --edition=2021 day05/src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --diagnostic-width=131 --crate-type bin --emit=dep-info,link -C opt-level=s -C lto -C codegen-units=1 -C debug-assertions=on -C metadata=0cd8b2583aaf17c6 -C extra-filename=-0cd8b2583aaf17c6 --out-dir /workspaces/aoc2022/target/mos-sim-none/debug/deps --target mos-sim-none -C incremental=/workspaces/aoc2022/target/mos-sim-none/debug/incremental -L dependency=/workspaces/aoc2022/target/mos-sim-none/debug/deps -L dependency=/workspaces/aoc2022/target/debug/deps --extern 'noprelude:alloc=/workspaces/aoc2022/target/mos-sim-none/debug/deps/liballoc-3081abdcf723510d.rlib' --extern 'noprelude:compiler_builtins=/workspaces/aoc2022/target/mos-sim-none/debug/deps/libcompiler_builtins-a108b1edb13c2358.rlib' --extern 'noprelude:core=/workspaces/aoc2022/target/mos-sim-none/debug/deps/libcore-befb87bba66454a1.rlib' --extern itertools=/workspaces/aoc2022/target/mos-sim-none/debug/deps/libitertools-e4ff7a70de3dc789.rlib --extern mos_alloc=/workspaces/aoc2022/target/mos-sim-none/debug/deps/libmos_alloc-efe3097ae898817c.rlib --extern ufmt_stdio=/workspaces/aoc2022/target/mos-sim-none/debug/deps/libufmt_stdio-cfb27b7f02432f23.rlib --extern utils=/workspaces/aoc2022/target/mos-sim-none/debug/deps/libutils-f7c9a14ffeb02758.rlib -Z unstable-options -C link-args=-Wl,--allow-multiple-definition` (signal: 11, SIGSEGV: invalid memory reference)
+
+  * debug: linking error
+  * release: Aborted (core dumped)
+
+ref:
+  PART1: BWNCQRMDB
+  PART2: NHWZCBNBF  
+  14777297 cycles
+release:
+  PART1: BWNCQRMDB
+  PART2: NHWZCBNBF 
+  12012959 cycles
+
+day06:
+  PART1: 1300
+  PART2: 3986
+  6235536 cycles
+release:
+  PART1: 1300
+  PART2: 3986
+  6032787 cycles
+
+ref:
+  PART1: 1300
+  PART2: 3986
+  8723227 cycles
+release:
+  PART1: 1300
+  PART2: 3986
+  7374494 cycles
+
+day07:
+  PART1: 1644735
+  PART2: 1300850
+  9126765 cycles
+  * linking error
+release:
+  PART1: 1644735
+  PART2: 1300850
+  7125203 cycles
+ref:
+  PART1: 1644735
+  PART2: 1300850
+  13314625 cycles
+release:
+  PART1: 1644735
+  PART2: 1300850
+  11675450 cycles
+
+day08:
+  PART1: 1832
+  PART2: 157320
+  100038050 cycles
+  * linking error
+release:
+  PART1: 1832
+  PART2: 157320
+  43698791 cycles
+
+ref:
+  PART1: 1832
+  PART2: 157320
+  94972043 cycles
+release:
+  PART1: 1832
+  PART2: 157320
+  47736825 cycles
+
+day09:
+  PART1: 6057
+  PART2: 2514
+  96920166 cycles
+release:
+  PART1: 6057
+  PART2: 2514
+  76314055 cycles
+
+ref:
+  PART1: 6057
+  PART2: 2514
+  99445864 cycles
+release:
+  PART1: 6057
+  PART2: 2514
+  86249334 cycles
+
+day10:
+  PART1: 14420
+  534560 cycles
+  * bad result, PART1: 74420
+release:
+  PART1: 14420
+  409490 cycles
+ref:
+  PART1: 14420
+  628790 cycles
+release:
+  PART1: 14420
+  534475 cycles
+
+day11:
+  error: could not compile `day11` (bin "day11")
+
+  Caused by:
+    process didn't exit successfully: `/home/mos/.rustup/toolchains/mos/bin/rustc --crate-name day11 --edition=2021 day11/src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --diagnostic-width=131 --crate-type bin --emit=dep-info,link -C opt-level=s -C lto -C codegen-units=1 -C debug-assertions=on -C metadata=85d1f50e8752dbba -C extra-filename=-85d1f50e8752dbba --out-dir /workspaces/aoc2022/target/mos-sim-none/debug/deps --target mos-sim-none -C incremental=/workspaces/aoc2022/target/mos-sim-none/debug/incremental -L dependency=/workspaces/aoc2022/target/mos-sim-none/debug/deps -L dependency=/workspaces/aoc2022/target/debug/deps --extern 'noprelude:alloc=/workspaces/aoc2022/target/mos-sim-none/debug/deps/liballoc-3081abdcf723510d.rlib' --extern 'noprelude:compiler_builtins=/workspaces/aoc2022/target/mos-sim-none/debug/deps/libcompiler_builtins-a108b1edb13c2358.rlib' --extern 'noprelude:core=/workspaces/aoc2022/target/mos-sim-none/debug/deps/libcore-befb87bba66454a1.rlib' --extern mos_alloc=/workspaces/aoc2022/target/mos-sim-none/debug/deps/libmos_alloc-efe3097ae898817c.rlib --extern ufmt_stdio=/workspaces/aoc2022/target/mos-sim-none/debug/deps/libufmt_stdio-cfb27b7f02432f23.rlib --extern utils=/workspaces/aoc2022/target/mos-sim-none/debug/deps/libutils-f7c9a14ffeb02758.rlib -Z unstable-options -C link-args=-Wl,--allow-multiple-definition` (signal: 11, SIGSEGV: invalid memory reference)
+
+* debug: link error
+* release:
+  PART1: 57348
+  part2: core dumped
+
+ref:
+  PART1: 57348
+  PART2: 14106266886
+  6074682587 cycles
+release:
+  PART1: 57348
+  PART2: 14106266886
+  4430403703 cycles
+
+day12:
+  PART1: 481
+  PART2: 480
+  3044986936 cycles
+release:
+  PART1: 481
+  PART2: 480
+  2587979679 cycles
+ref:
+  PART1: 481
+  PART2: 480
+  2568535643 cycles
+release:
+  PART1: 481
+  PART2: 480
+  3034713382 cycles
+
+day13: (wrong part1 answer)
+  PART1: 4
+  PART2: 140
+  11425962 cycles
+  * link error
+release:
+  PART1: 4
+  PART2: 140
+  11181694 cycles
+ref:
+  PART1: 4
+  PART2: 140
+  12050830 cycles
+release:
+  PART1: 4
+  PART2: 140
+  11960142 cycles
+
+day14:
+  PART1: 719
+  PART2: 23390
+  2639651852 cycles
+release:
+  PART1: 719
+  PART2: 23390
+  2301615030 cycles
+ref:
+  PART1: 719
+  PART2: 23390
+  2235519050 cycles
+release:
+  PART1: 719
+  PART2: 23390
+  1961462754 cycles
+
+day15: 
+  * debug: link error
+  * release: timeout
+
+day17:
+  error: could not compile `day17` (bin "day17"); 3 warnings emitted
+
+  Caused by:
+    process didn't exit successfully: `/home/mos/.rustup/toolchains/mos/bin/rustc --crate-name day17 --edition=2021 day17/src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --diagnostic-width=131 --crate-type bin --emit=dep-info,link -C opt-level=s -C lto -C codegen-units=1 -C debug-assertions=on -C metadata=8c279c562c8301ba -C extra-filename=-8c279c562c8301ba --out-dir /workspaces/aoc2022/target/mos-sim-none/debug/deps --target mos-sim-none -C incremental=/workspaces/aoc2022/target/mos-sim-none/debug/incremental -L dependency=/workspaces/aoc2022/target/mos-sim-none/debug/deps -L dependency=/workspaces/aoc2022/target/debug/deps --extern 'noprelude:alloc=/workspaces/aoc2022/target/mos-sim-none/debug/deps/liballoc-3081abdcf723510d.rlib' --extern 'noprelude:compiler_builtins=/workspaces/aoc2022/target/mos-sim-none/debug/deps/libcompiler_builtins-a108b1edb13c2358.rlib' --extern 'noprelude:core=/workspaces/aoc2022/target/mos-sim-none/debug/deps/libcore-befb87bba66454a1.rlib' --extern itertools=/workspaces/aoc2022/target/mos-sim-none/debug/deps/libitertools-e4ff7a70de3dc789.rlib --extern mos_alloc=/workspaces/aoc2022/target/mos-sim-none/debug/deps/libmos_alloc-efe3097ae898817c.rlib --extern ufmt_stdio=/workspaces/aoc2022/target/mos-sim-none/debug/deps/libufmt_stdio-cfb27b7f02432f23.rlib --extern utils=/workspaces/aoc2022/target/mos-sim-none/debug/deps/libutils-f7c9a14ffeb02758.rlib -Z unstable-options -C link-args=-Wl,--allow-multiple-definition` (signal: 11, SIGSEGV: invalid memory reference)
+
+  * debug: link error
+
+ref:
+  CHAMBER SIZE: 3152
+  PART1: 3068 
+  PART2: 1514285714288
+  26616667 cycles
+release:
+  PART1: 3068
+  PART2: 1514285714288
+  23902265 cycles
+
+day18:
+  warning: the feature `slice_group_by` has been stable since 1.77.0-dev and no longer requires an attribute to enable
+  --> day18/src/main.rs:4:12
+    |
+  4 | #![feature(slice_group_by)]
+    |            ^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(stable_features)]` on by default
+
+  error[E0599]: no method named `group_by` found for reference `&[(i8, i8, i8)]` in the current scope
+    --> day18/src/main.rs:179:24
+      |
+  179 |     for slice in input.group_by(|a, b| a.0 == b.0) {
+      |                        ^^^^^^^^ method not found in `&[(i8, i8, i8)]`
+
+  For more information about this error, try `rustc --explain E0599`.
+  warning: `day18` (bin "day18") generated 1 warning
+  error: could not compile `day18` (bin "day18") due to 1 previous error; 1 warning emitted
+
+  * the same ^^^
+
+ref:
+  PART1: 3586
+  max q size: 3810, q capacity: 4000
+  PART2: [346, 346, 348, 348, 342, 342] 2072
+  156275997 cycles
+release:
+  PART1: 3586
+  max q size: 3810, q capacity: 4000
+  PART2: [346, 346, 348, 348, 342, 342] 2072
+  152595014 cycles
+
+day19: 
+  * debug: link error
+
+day20:
+  
