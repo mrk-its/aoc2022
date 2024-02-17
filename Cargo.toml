@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "cycle_bug",
     "product_bug",
+    "pi",
     "day01",
     "day02",
     "day03",
