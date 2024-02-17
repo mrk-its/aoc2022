@@ -1,4 +1,5 @@
 [workspace]
+resolver = "2"
 members = [
     "cycle_bug",
     "product_bug",
@@ -29,9 +30,11 @@ lto = true
 opt-level = "s"
 debug = 0
 codegen-units = 1
+panic = "abort"
 
 [profile.release]
 opt-level = "s"
 lto = true
 debug = 0
 codegen-units = 1
+panic = "abort"

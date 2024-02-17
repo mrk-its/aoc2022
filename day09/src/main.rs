@@ -1,6 +1,5 @@
 #![no_std]
 #![feature(start)]
-#![feature(default_alloc_error_handler)]
 
 pub mod display;
 

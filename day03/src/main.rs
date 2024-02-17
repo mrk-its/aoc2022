@@ -1,6 +1,5 @@
 #![no_std]
 #![feature(start)]
-#![feature(default_alloc_error_handler)]
 
 extern crate alloc;
 extern crate mos_alloc;
@@ -29,7 +28,7 @@ fn intersect(lines: &[&[u8]]) -> Score {
         // for some reason calling this overloaded operator is slower :/
         // out &= tmp;
     }
-    for data in lines.last().cloned() {
+    if let Some(data) = lines.last().cloned() {
         for v in data.iter().cloned().map(priority) {
             if out.contains(v) {
                 return v as Score;

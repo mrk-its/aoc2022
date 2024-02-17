@@ -1,6 +1,6 @@
 #![no_std]
 #![feature(start)]
-#![feature(default_alloc_error_handler)]
+
 #![feature(slice_group_by)]
 #![allow(dead_code)]
 

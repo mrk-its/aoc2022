@@ -1,5 +1,6 @@
 #![no_std]
 #![allow(incomplete_features)]
+#![allow(internal_features)]
 #![feature(generic_const_exprs)]
 #![feature(core_intrinsics)]
 // #![feature(nll)]
