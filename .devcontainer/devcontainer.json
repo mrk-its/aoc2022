@@ -1,17 +1,19 @@
 {
-  "_image": "mrkits/rust-mos",
-  "__image": "mrkits/rust-mos:adbc7b3dd-3e94be4-58bbe626",
-  "image": "mrkits/rust-mos:1d7989f29-777e89e-585f6d9c",
+  "image": "mrkits/rust-mos:1d7989f29-777e89e-bfefcd9e",
   // "workspaceMount": "source=/home/mrk/repos,target=/workspaces/repos,type=bind",
   // "workspaceFolder": "/workspaces/repos/aoc2021",
   "onCreateCommand": "echo settings set target.load-cwd-lldbinit true > /home/mos/.lldbinit",
-  "settings": {
-    "rust-analyzer.checkOnSave.allTargets": false,
-    "rust-analyzer.diagnostics.disabled": [
-        "unresolved-macro-call",
-        "macro-error"
-    ]
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "rust-analyzer.checkOnSave.allTargets": false,
+        "rust-analyzer.diagnostics.disabled": [
+          "unresolved-macro-call",
+          "macro-error"
+        ]
+      },
+      "extensions": ["rust-lang.rust-analyzer", "serayuzgur.crates", "vadimcn.vscode-lldb"]
+    }
   },
-  "runArgs": ["--ulimit", "core=-1",  "--privileged"],
-  "extensions": ["rust-lang.rust-analyzer", "serayuzgur.crates", "vadimcn.vscode-lldb"]
+  "runArgs": ["--ulimit", "core=-1",  "--privileged"]
 }
