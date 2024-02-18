@@ -1,7 +1,5 @@
 #![no_std]
 #![feature(start)]
-
-#![feature(slice_group_by)]
 #![allow(dead_code)]
 
 utils::entry!(main);
@@ -176,7 +174,7 @@ fn part1(input: &[(i8, i8, i8)]) {
 
     let mut layer = Layer::default();
 
-    for slice in input.group_by(|a, b| a.0 == b.0) {
+    for slice in input[..].chunk_by(|a, b| a.0 == b.0) {
         for &(_, y, z) in slice {
             if layer.get(y, z) {
                 removed_x += 2;
