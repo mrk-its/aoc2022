@@ -18,7 +18,7 @@ use crate::display::DisplayInterface;
 utils::entry!(main);
 extern crate alloc;
 
-use ufmt_stdio::{ufmt::derive::uDebug, *};
+use ufmt_stdio::*;
 
 include!(concat!(env!("OUT_DIR"), "/input.rs"));
 

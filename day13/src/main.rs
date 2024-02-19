@@ -41,12 +41,6 @@ impl Ord for Item {
 }
 
 impl Item {
-    fn is_num(&self) -> bool {
-        match &self {
-            Item::Number(_) => true,
-            _ => false,
-        }
-    }
     fn to_list(&self) -> Item {
         match &self {
             Item::Number(n) => Item::List(vec![Item::Number(*n)]),

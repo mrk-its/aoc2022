@@ -139,12 +139,12 @@ fn main() {
         }
     }
     fs.update_dir_sizes(0);
-    println!("nodes: {}", fs.nodes.len());
-    println!(
-        "free heap: {} of {}",
-        mos_alloc::bytes_free(),
-        mos_alloc::get_limit()
-    );
+    // println!("nodes: {}", fs.nodes.len());
+    // println!(
+    //     "free heap: {} of {}",
+    //     mos_alloc::bytes_free(),
+    //     mos_alloc::get_limit()
+    // );
     let part1 = fs
         .iter_dirs()
         .map(|f| f.size.get())

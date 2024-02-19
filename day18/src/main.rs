@@ -123,12 +123,14 @@ impl<const N: usize> Volume<N> {
             max_size = max_size.max(to_visit.len());
             *self.get_mut(x, y, z) |= VISITED;
         }
-        println!(
-            "max q size: {}, q capacity: {}",
-            max_size,
-            to_visit.capacity()
-        );
+        // println!(
+        //     "max q size: {}, q capacity: {}",
+        //     max_size,
+        //     to_visit.capacity()
+        // );
     }
+
+    #[allow(dead_code)]
     fn show(&self, mask: u8) {
         for plane in &self.data {
             for row in plane {
@@ -191,16 +193,15 @@ fn part1(input: &[(i8, i8, i8)]) {
             }
             layer.set(y, z, true);
         }
-        layer.show();
+        // layer.show();
     }
-    println!(
-        "total: {}, removed: {} {} {}",
-        total_surface, removed_x, removed_y, removed_z
-    );
-    println!(
-        "PART1: {}",
-        total_surface - removed_x - removed_y - removed_z
-    );
+    // println!(
+    //     "total: {}, removed: {} {} {}",
+    //     total_surface, removed_x, removed_y, removed_z
+    // );
+    let part1 = total_surface - removed_x - removed_y - removed_z;
+    assert!(part1 == 3586);
+    println!("PART1: {}", part1);
 }
 
 fn part2(input: &[(i8, i8, i8)]) {
@@ -227,15 +228,17 @@ fn part2(input: &[(i8, i8, i8)]) {
             }
         }
     }
-    println!("PART2: {:?} {}", face_cntrs, face_cntrs.iter().sum::<i32>());
+    let part2 = face_cntrs.iter().sum::<i32>();
+    assert!(part2 == 2072);
+    println!("PART2: {}", part2);
 }
 
 fn main() {
     #[cfg(target_arch = "mos")]
     mos_alloc::set_limit(20000);
     let data = parse();
-    #[cfg(target_arch = "mos")]
-    println!("free: {}", mos_alloc::bytes_free());
+    // #[cfg(target_arch = "mos")]
+    // println!("free: {}", mos_alloc::bytes_free());
 
     part1(&data);
     part2(&data);

@@ -52,16 +52,17 @@ const PART2_N_CUBES: u64 = 1000000000000;
 const WIN_LEN: usize = 20;
 
 fn show_line(b: u8) {
-    const chars: &[u8] = b" #";
+    const CHARS: &[u8] = b" #";
     let mut buf = [0u8; 8];
     let mut mask = 0x80;
     for index in 0..8u8 {
-        buf[index as usize] = chars[(b & mask > 0) as usize];
+        buf[index as usize] = CHARS[(b & mask > 0) as usize];
         mask >>= 1;
     }
     println!("{}", to_str(&buf));
 }
 
+#[allow(dead_code)]
 fn show_chamber(chamber: &Vec<u8>) {
     for v in chamber.iter().rev() {
         show_line(*v);
@@ -153,8 +154,8 @@ fn main() {
             chamber.pop();
         }
     }
-    println!("CHAMBER SIZE: {}", chamber.len());
-
+    assert!(part1 == 3068);
     println!("PART1: {}", part1);
+    assert!(part2 == 1514285714288);
     println!("PART2: {}", part2);
 }

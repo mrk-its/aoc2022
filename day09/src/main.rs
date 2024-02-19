@@ -141,7 +141,6 @@ fn main() {
     let mut min = (0, 0);
     let mut max = (0, 0);
 
-    println!("CHECKING SIZE...");
     for (dir, n) in moves.clone() {
         rope.mv(dir, n);
         min.0 = min.0.min(rope.head.0);

@@ -106,7 +106,7 @@ fn play(mut monkeys: Vec<Monkey>, n_rounds: usize, divider: u8) -> BigInt {
 
     let mut tmp = Vec::<Int>::with_capacity(40);
 
-    for round in 0..n_rounds {
+    for _round in 0..n_rounds {
         for index in 0..monkeys.len() {
             tmp.clear();
             tmp.extend(monkeys[index].items.drain(..));
@@ -124,9 +124,9 @@ fn play(mut monkeys: Vec<Monkey>, n_rounds: usize, divider: u8) -> BigInt {
                 monkeys[next_monkey].items.push(next_level);
             }
         }
-        if round > 0 && (round & 255) == 0 {
-            println!("round #{}", round);
-        }
+        // if round > 0 && (round & 255) == 0 {
+        //     println!("round #{}", round);
+        // }
     }
     let mut counts = monkeys.iter().map(|m| m.cnt as i32).collect::<Vec<_>>();
     counts.sort_by_key(|i| -i);
