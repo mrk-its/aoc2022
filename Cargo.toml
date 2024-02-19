@@ -39,3 +39,6 @@ lto = true
 debug = 0
 codegen-units = 1
 panic = "abort"
+
+#[patch.crates-io]
+#mos-alloc = { path = "mos-alloc" }
