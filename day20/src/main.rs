@@ -1,7 +1,6 @@
 #![no_std]
-#![feature(start)]
+#![no_main]
 
-utils::entry!(main);
 extern crate alloc;
 
 use alloc::vec::Vec;
@@ -35,7 +34,9 @@ fn mix_numbers(numbers: &mut Vec<(usize, Int)>, n: usize, key: i64) -> i64 {
     key * (v1 + v2 + v3)
 }
 
-fn main() {
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     #[cfg(target_arch = "mos")]
     mos_alloc::set_limit(MAX_SIZE * 4 + 1000);
     let mut numbers = Vec::with_capacity(MAX_SIZE);
@@ -53,4 +54,5 @@ fn main() {
     let part2 = mix_numbers(&mut numbers, 10, KEY);
     // assert!(part2 == 14375678667089);
     println!("PART2: {}", part2);
+    return 0;
 }

@@ -1,7 +1,6 @@
 #![no_std]
-#![feature(start)]
+#![no_main]
 
-utils::entry!(main);
 extern crate alloc;
 
 use alloc::vec::Vec;
@@ -108,7 +107,9 @@ fn turn(blueprint: &Blueprint, inventory: Inventory, t: isize, best_inventory: &
     }
 }
 
-fn main() {
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     let blueprints = utils::iter_lines!("../../input/day19/input.txt").map(|line| {
         let v = line
             .split(|b| !b.is_ascii_digit())
@@ -152,4 +153,5 @@ fn main() {
     // }
     // println!("PART2: {}", part2);
     // assert!(part2 == 13475);
+    return 0;
 }

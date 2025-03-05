@@ -1,10 +1,11 @@
 #![no_std]
-#![feature(start)]
+#![no_main]
+#![allow(incomplete_features)]
+#![feature(generic_const_exprs)] // https://github.com/rust-lang/rust/issues/133199#issuecomment-2630615573
 
 extern crate alloc;
 extern crate mos_alloc;
 
-utils::entry!(main);
 use alloc::vec::Vec;
 use ufmt_stdio::*;
 use utils::BitSet;
@@ -44,7 +45,9 @@ fn score1(line: &[u8]) -> Score {
     intersect(&[a, b])
 }
 
-fn main() {
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     let input = utils::iter_lines!("../../input/day03/input.txt").collect::<Vec<_>>();
     let part1 = input.iter().cloned().map(score1).sum::<Score>();
     assert!(part1 == 8153);
@@ -54,4 +57,5 @@ fn main() {
     let part2 = input.chunks(3).map(intersect).sum::<Score>();
     assert!(part2 == 2342);
     println!("PART2: {}", part2);
+    return 0;
 }

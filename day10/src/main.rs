@@ -1,7 +1,6 @@
 #![no_std]
-#![feature(start)]
+#![no_main]
 
-utils::entry!(main);
 use ufmt_stdio::{ufmt::derive::uDebug, *};
 use utils::to_str;
 
@@ -64,7 +63,9 @@ fn eol() {
     println!();
 }
 
-fn main() {
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     #[cfg(target_vendor = "atari8")]
     unsafe {
         *a800xl_utils::consts::LMARGN = 0;
@@ -101,4 +102,5 @@ fn main() {
         }
     }
     println!("\nPART1: {}", part1);
+    return 0;
 }

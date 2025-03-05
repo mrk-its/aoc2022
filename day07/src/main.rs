@@ -1,10 +1,9 @@
 #![no_std]
-#![feature(start)]
+#![no_main]
 
 extern crate alloc;
 extern crate mos_alloc;
 
-utils::entry!(main);
 use alloc::vec::Vec;
 use core::cell::Cell;
 use ufmt_stdio::*;
@@ -117,7 +116,10 @@ impl FileSystem {
         return self.nodes[0].size.get();
     }
 }
-fn main() {
+
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     mos_alloc::set_limit(20000);
     let mut fs = FileSystem::new();
 
@@ -167,4 +169,5 @@ fn main() {
         .unwrap();
 
     println!("PART2: {}", part2);
+    return 0;
 }

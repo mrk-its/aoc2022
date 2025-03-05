@@ -1,5 +1,5 @@
 #![no_std]
-#![feature(start)]
+#![no_main]
 
 pub mod display;
 
@@ -13,7 +13,6 @@ mod ui;
 
 use crate::display::DisplayInterface;
 
-utils::entry!(main);
 extern crate alloc;
 
 use alloc::vec::Vec;
@@ -131,7 +130,9 @@ impl Rope {
     }
 }
 
-fn main() {
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     let mut rope = Rope::new();
     mos_alloc::set_limit(20000);
 
@@ -211,4 +212,5 @@ fn main() {
     let part2 = plane.count();
     assert!(part2 == 2514);
     println!("{}", part2);
+    return 0;
 }

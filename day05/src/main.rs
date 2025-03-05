@@ -1,10 +1,8 @@
 #![no_std]
-#![feature(start)]
+#![no_main]
 
 extern crate alloc;
 extern crate mos_alloc;
-
-utils::entry!(main);
 
 use alloc::vec::Vec;
 use itertools::*;
@@ -49,7 +47,9 @@ fn top_items(cranes: &Vec<Vec<u8>>) -> Vec<u8> {
         .collect::<Vec<_>>()
 }
 
-fn main() {
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     let mut input = utils::iter_lines!("../../input/day05/input.txt");
     let mut cranes = parse_cranes(&mut input);
     let mut cranes2 = cranes.clone();
@@ -81,4 +81,5 @@ fn main() {
     let part2 = top_items(&cranes2);
     assert!(part2 == b"NHWZCBNBF");
     println!("PART2: {}", to_str(&part2));
+    return 0;
 }

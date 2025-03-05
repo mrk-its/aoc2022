@@ -1,10 +1,9 @@
 #![no_std]
-#![feature(start)]
+#![no_main]
 
 extern crate alloc;
 extern crate mos_alloc;
 
-utils::entry!(main);
 use core::{cell::RefCell, cmp::Ordering};
 
 use alloc::vec;
@@ -88,7 +87,9 @@ impl Item {
     }
 }
 
-fn main() {
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     mos_alloc::set_limit(10000);
     let ignore_below: RefCell<Option<Item>> = core::cell::RefCell::new(None);
 
@@ -144,5 +145,5 @@ fn main() {
     }
     let part2 = (weights[0] + 1) * (weights[1] + 1);
     println!("PART2: {}", part2);
-    return;
+    return 0;
 }

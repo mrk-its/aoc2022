@@ -1,9 +1,11 @@
 #![no_std]
-#![feature(start)]
+#![no_main]
 
 pub mod display;
 mod point;
 use point::Point;
+#[allow(unused_imports)]
+use utils;
 
 #[cfg(target_vendor = "atari8")]
 #[path = "atari.rs"]
@@ -15,7 +17,6 @@ mod ui;
 
 use crate::display::DisplayInterface;
 
-utils::entry!(main);
 extern crate alloc;
 
 use ufmt_stdio::*;
@@ -26,7 +27,9 @@ fn shift(pt: &(i16, i16)) -> (i16, i16) {
     return (160 + pt.0 - 500, pt.1);
 }
 
-fn main() {
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     mos_alloc::set_limit(10000);
     let mut display = ui::Display::init();
 
@@ -79,4 +82,5 @@ fn main() {
             }
         }
     }
+    return 0;
 }

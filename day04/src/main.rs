@@ -1,11 +1,12 @@
 #![no_std]
-#![feature(start)]
+#![no_main]
 
-utils::entry!(main);
 use itertools::*;
 use ufmt_stdio::*;
 
-fn main() {
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     let parsed = utils::iter_lines!("../../input/day04/input.txt").map(|line| {
         line.split(|c| *c == b',')
             .map(|v| {
@@ -30,4 +31,5 @@ fn main() {
         .count();
     assert!(part2 == 857);
     println!("PART2: {}", part2);
+    return 0;
 }

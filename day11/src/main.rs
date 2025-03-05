@@ -1,5 +1,5 @@
 #![no_std]
-#![feature(start)]
+#![no_main]
 
 extern crate alloc;
 use alloc::boxed::Box;
@@ -9,8 +9,6 @@ use mos_alloc;
 
 #[cfg(target_vendor = "atari8")]
 use a800xl_utils::clock;
-
-utils::entry!(main);
 
 use ufmt_stdio::*;
 use utils::to_str;
@@ -133,7 +131,9 @@ fn play(mut monkeys: Vec<Monkey>, n_rounds: usize, divider: u8) -> BigInt {
     counts[0] as BigInt * counts[1] as BigInt
 }
 
-fn main() {
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     #[cfg(target_vendor = "atari8")]
     let start_t = clock();
 
@@ -153,4 +153,5 @@ fn main() {
         let seconds = ticks / 50;
         println!("ticks: {} ({} seconds)", ticks, seconds);
     }
+    return 0;
 }

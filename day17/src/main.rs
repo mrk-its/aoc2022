@@ -1,7 +1,6 @@
 #![no_std]
-#![feature(start)]
+#![no_main]
 
-utils::entry!(main);
 extern crate alloc;
 
 use alloc::vec::Vec;
@@ -70,7 +69,9 @@ fn show_chamber(chamber: &Vec<u8>) {
     println!();
 }
 
-fn main() {
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     #[cfg(target_arch = "mos")]
     mos_alloc::set_limit(20000);
 
@@ -158,4 +159,5 @@ fn main() {
     println!("PART1: {}", part1);
     assert!(part2 == 1514285714288);
     println!("PART2: {}", part2);
+    return 0;
 }

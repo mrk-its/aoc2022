@@ -1,5 +1,5 @@
 {
-  "image": "mrkits/rust-mos:latest",
+  "image": "mrkits/rust-mos:7c0751c5b-334fc98-98c8ad25",
   // "workspaceMount": "source=/home/mrk/repos,target=/workspaces/repos,type=bind",
   // "workspaceFolder": "/workspaces/repos/aoc2021",
   "onCreateCommand": "echo settings set target.load-cwd-lldbinit true > /home/mos/.lldbinit",

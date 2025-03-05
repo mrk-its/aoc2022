@@ -1,6 +1,5 @@
 #![no_std]
-#![feature(start)]
-utils::entry!(main);
+#![no_main]
 use ufmt_stdio::*;
 
 type Score = i16;
@@ -21,7 +20,9 @@ fn score2(pair: Pair) -> Score {
     score((pair & !3) + THINGS[pair as usize])
 }
 
-fn main() {
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     let input = utils::iter_lines!("../../input/day02/input.txt").map(parse_line);
     let part1 = input.clone().map(score).sum::<Score>();
     assert!(part1 == 13268);
@@ -30,4 +31,5 @@ fn main() {
     let part2 = input.map(score2).sum::<Score>();
     assert!(part2 == 15508);
     println!("PART2: {}", part2);
+    return 0;
 }

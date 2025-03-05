@@ -1,8 +1,10 @@
 #![no_std]
-#![feature(start)]
+#![no_main]
 
-utils::entry!(main);
 use ufmt_stdio::*;
+
+#[allow(unused_imports)]
+use utils;
 
 fn all_different(inp: &[u8]) -> bool {
     for i in 1..inp.len() {
@@ -24,7 +26,9 @@ fn start_of_packet(input: &[u8], n: usize) -> Option<usize> {
     None
 }
 
-fn main() {
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     let input = include_bytes!("../../input/day06/input.txt");
 
     let part1 = start_of_packet(input, 4).unwrap();
@@ -34,4 +38,5 @@ fn main() {
     let part2 = start_of_packet(input, 14).unwrap();
     assert!(part2 == 3986);
     println!("PART2: {}", part2);
+    return 0;
 }

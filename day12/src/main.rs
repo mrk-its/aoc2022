@@ -1,12 +1,14 @@
 #![no_std]
-#![feature(start)]
-
-utils::entry!(main);
+#![no_main]
 use ufmt_stdio::*;
+#[allow(unused_imports)]
+use utils;
 extern crate alloc;
 use alloc::vec::Vec;
 
-fn main() {
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     mos_alloc::set_limit(16000);
 
     let height_map = include_bytes!("../../input/day12/input.txt");
@@ -71,4 +73,5 @@ fn main() {
     println!("PART1: {}", part1);
     // assert_eq!(part2, 0);
     println!("PART2: {}", part2);
+    return 0;
 }

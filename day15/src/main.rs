@@ -1,7 +1,6 @@
 #![no_std]
-#![feature(start)]
+#![no_main]
 
-utils::entry!(main);
 extern crate alloc;
 
 use alloc::vec::Vec;
@@ -32,7 +31,9 @@ fn perimeter(mid: (i32, i32), r: i32) -> impl Iterator<Item = (i32, i32)> {
     })
 }
 
-fn main() {
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     const PART1_ROW: i32 = 2000000;
     const PART2_SIZE: i32 = 4000000;
 
@@ -96,4 +97,5 @@ fn main() {
     let part2 = out.0 as i64 * 4000000 + out.1 as i64;
     assert!(part2 == 11557863040754);
     println!("PART2: {:?}", part2);
+    return 0;
 }

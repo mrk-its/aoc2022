@@ -1,7 +1,6 @@
 #![no_std]
-#![feature(start)]
+#![no_main]
 
-utils::entry!(main);
 use ufmt_stdio::*;
 
 const MAX_SIZE: usize = 99;
@@ -70,7 +69,9 @@ impl Trees {
     }
 }
 
-fn main() {
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     let mut trees = Trees {
         trees: [0; MAX_SIZE * MAX_SIZE],
         size: 0,
@@ -95,4 +96,5 @@ fn main() {
     let part2 = trees.look();
     assert!(part2 == 157320);
     println!("PART2: {}", part2);
+    return 0;
 }

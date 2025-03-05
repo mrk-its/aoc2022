@@ -1,8 +1,7 @@
 #![no_std]
-#![feature(start)]
+#![no_main]
 #![allow(dead_code)]
 
-utils::entry!(main);
 extern crate alloc;
 
 use alloc::vec::Vec;
@@ -233,7 +232,9 @@ fn part2(input: &[(i8, i8, i8)]) {
     println!("PART2: {}", part2);
 }
 
-fn main() {
+#[cfg_attr(not(test), export_name = "main")]
+#[cfg_attr(test, allow(dead_code))]
+fn main() -> isize {
     #[cfg(target_arch = "mos")]
     mos_alloc::set_limit(20000);
     let data = parse();
@@ -242,4 +243,5 @@ fn main() {
 
     part1(&data);
     part2(&data);
+    return 0;
 }
