@@ -1,6 +1,7 @@
 #![no_std]
 #![no_main]
 use ufmt_stdio::*;
+use utils;
 
 // #[cfg_attr(test, export_name = "main_main")]
 #[cfg_attr(not(test), export_name = "main")]

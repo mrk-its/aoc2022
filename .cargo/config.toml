@@ -9,4 +9,4 @@ runner = ["mos-sim", "--cycles"]
 
 [unstable]
 build-std = ["core", "alloc"]
-build-std-features = ["panic_immediate_abort"]
+# build-std-features = ["panic_immediate_abort"]

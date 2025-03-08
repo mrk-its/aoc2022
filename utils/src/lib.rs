@@ -3,7 +3,6 @@
 #![allow(internal_features)]
 #![feature(generic_const_exprs)]
 #![feature(core_intrinsics)]
-// #![feature(nll)]
 
 pub mod hash;
 use core::panic::PanicInfo;
@@ -11,7 +10,7 @@ use ufmt_stdio::*;
 
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
-    println!("PANIC!!!");
+    println!("PANIC! {}", _info.message().as_str().unwrap_or("---"));
     core::intrinsics::abort();
 }
 
