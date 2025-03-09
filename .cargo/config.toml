@@ -2,7 +2,7 @@
 target = "mos-sim-none"
 # rustflags = ["-C", "link-args=-Wl,--save-temps"]
 # rustflags = ["-C", "link-args=-Wl,--allow-multiple-definition"]
-# rustflags = ["--emit=llvm-ir"]
+rustflags = ["--emit=llvm-ir"]
 
 [target.mos-sim-none]
 runner = ["mos-sim", "--cycles"]

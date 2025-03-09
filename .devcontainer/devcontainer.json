@@ -1,4 +1,5 @@
 {
+  // "image": "mrkits/rust-mos:dc8f9255b-334fc98-d7d4e5ec",
   "image": "mrkits/rust-mos:7c0751c5b-334fc98-98c8ad25",
   // "workspaceMount": "source=/home/mrk/repos,target=/workspaces/repos,type=bind",
   // "workspaceFolder": "/workspaces/repos/aoc2021",

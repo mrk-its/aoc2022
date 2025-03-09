@@ -9,5 +9,4 @@ ufmt-stdio = "0"
 mos-alloc = "0.2.0"
 itertools = {version="0", default-features=false}
 [target.'cfg(target_vendor = "atari8")'.dependencies]
-a800xl-utils = "0.2"
-
+a800xl-utils = "^0.2"

@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(unexpected_cfgs)]
 
 pub mod display;
 mod point;

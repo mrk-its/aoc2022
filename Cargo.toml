@@ -39,3 +39,6 @@ lto = true
 debug = 0
 codegen-units = 1
 panic = "abort"
+
+[patch.crates-io]
+a800xl-utils = {git='https://github.com/mrk-its/a800xl-utils'}

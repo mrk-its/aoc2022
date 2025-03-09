@@ -120,6 +120,7 @@ impl FileSystem {
 #[cfg_attr(not(test), export_name = "main")]
 #[cfg_attr(test, allow(dead_code))]
 fn main() -> isize {
+    #[cfg(target_arch = "mos")]
     mos_alloc::set_limit(20000);
     let mut fs = FileSystem::new();
 

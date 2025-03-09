@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(unexpected_cfgs)]
 
 extern crate alloc;
 use alloc::boxed::Box;

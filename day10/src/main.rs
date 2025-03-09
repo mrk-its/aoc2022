@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(unexpected_cfgs)]
 
 use ufmt_stdio::{ufmt::derive::uDebug, *};
 use utils::to_str;

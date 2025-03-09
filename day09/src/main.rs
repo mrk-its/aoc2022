@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(unexpected_cfgs)]
 
 pub mod display;
 
@@ -134,6 +135,8 @@ impl Rope {
 #[cfg_attr(test, allow(dead_code))]
 fn main() -> isize {
     let mut rope = Rope::new();
+
+    #[cfg(target_arch = "mos")]
     mos_alloc::set_limit(20000);
 
     let moves = utils::iter_lines!("../../input/day09/input.txt")
